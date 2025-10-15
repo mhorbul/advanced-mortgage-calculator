@@ -1,0 +1,17 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- House shape -->
+  <path d="M16 2L4 12V28H12V20H20V28H28V12L16 2Z" fill="#2563eb" stroke="#1d4ed8" stroke-width="1"/>
+  
+  <!-- Door -->
+  <rect x="13" y="20" width="6" height="8" fill="#1e40af" rx="1"/>
+  
+  <!-- Door handle -->
+  <circle cx="17" cy="24" r="0.5" fill="#fbbf24"/>
+  
+  <!-- Windows -->
+  <rect x="7" y="16" width="3" height="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="0.5"/>
+  <rect x="22" y="16" width="3" height="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="0.5"/>
+  
+  <!-- Dollar sign overlay -->
+  <text x="16" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#fbbf24">$</text>
+</svg>
