@@ -59,8 +59,8 @@ export default function MortgageCalculator() {
       (mortgageMonthlyRate * Math.pow(1 + mortgageMonthlyRate, totalMonths)) /
       (Math.pow(1 + mortgageMonthlyRate, totalMonths) - 1);
 
-    // Calculate leftover after housing costs
-    const leftover = monthlyIncome - monthlyExpenses - mortgagePayment;
+    // Calculate leftover after basic expenses (not including housing)
+    const leftover = monthlyIncome - monthlyExpenses;
 
     // Calculate net rent cost for each strategy (opportunity cost of not renting)
     let netRentCost = 0;
@@ -302,8 +302,8 @@ export default function MortgageCalculator() {
     const invRealTaxSavings = invTotalTaxSavings / invInflationAdjustment;
     const invRealInvestmentBalance = finalInvestmentBalance / invInflationAdjustment;
     const invRealMaintenance = invTotalMaintenance / invInflationAdjustment;
-    const invRealNetPosition = enableRentalComparison ? 
-      invRealInvestmentBalance - (invRealInterest - invRealTaxSavings + invRealMaintenance) : 
+    const invRealNetPosition = enableRentalComparison ?
+      invRealInvestmentBalance - (invRealInterest - invRealTaxSavings + invRealMaintenance) :
       invRealInvestmentBalance - (invRealInterest - invRealTaxSavings);
 
     // Rental Strategy (Rent instead of buying) - Only if enabled
@@ -393,8 +393,8 @@ export default function MortgageCalculator() {
         totalInterest: tradTotalInterest,
         totalTaxSavings: tradTotalTaxSavings,
         totalMaintenance: tradTotalMaintenance,
-        netInterest: enableRentalComparison ? 
-          tradTotalInterest - tradTotalTaxSavings + tradTotalMaintenance : 
+        netInterest: enableRentalComparison ?
+          tradTotalInterest - tradTotalTaxSavings + tradTotalMaintenance :
           tradTotalInterest - tradTotalTaxSavings,
         monthlyPayment: mortgagePayment,
         netRentCost: netRentCost,
@@ -403,8 +403,8 @@ export default function MortgageCalculator() {
         realTotalInterest: tradRealInterest,
         realTotalTaxSavings: tradRealTaxSavings,
         realTotalMaintenance: tradRealMaintenance,
-        realNetInterest: enableRentalComparison ? 
-          tradRealInterest - tradRealTaxSavings + tradRealMaintenance : 
+        realNetInterest: enableRentalComparison ?
+          tradRealInterest - tradRealTaxSavings + tradRealMaintenance :
           tradRealInterest - tradRealTaxSavings,
         realNetRentCost: netRentCostReal,
         realFinalHomeValue: finalHomeValueReal,
@@ -412,8 +412,8 @@ export default function MortgageCalculator() {
         rental: enableRentalComparison ? {
           monthlyPayment: mortgagePayment * (1 - rentalDiscountPercent / 100),
           totalCost: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths,
-          investmentGain: leftover * totalMonths * (1 + investmentMonthlyRate), // Always invest leftover when renting
-          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + (leftover * totalMonths * (1 + investmentMonthlyRate))
+          investmentGain: (leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate), // Invest leftover after paying rent
+          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + ((leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       extraPayment: {
@@ -422,8 +422,8 @@ export default function MortgageCalculator() {
         totalInterest: extraTotalInterest,
         totalTaxSavings: extraTotalTaxSavings,
         totalMaintenance: extraTotalMaintenance,
-        netInterest: enableRentalComparison ? 
-          extraTotalInterest - extraTotalTaxSavings + extraTotalMaintenance : 
+        netInterest: enableRentalComparison ?
+          extraTotalInterest - extraTotalTaxSavings + extraTotalMaintenance :
           extraTotalInterest - extraTotalTaxSavings,
         monthlyPayment: mortgagePayment + leftover,
         netRentCost: netRentCost,
@@ -432,8 +432,8 @@ export default function MortgageCalculator() {
         realTotalInterest: extraRealInterest,
         realTotalTaxSavings: extraRealTaxSavings,
         realTotalMaintenance: extraRealMaintenance,
-        realNetInterest: enableRentalComparison ? 
-          extraRealInterest - extraRealTaxSavings + extraRealMaintenance : 
+        realNetInterest: enableRentalComparison ?
+          extraRealInterest - extraRealTaxSavings + extraRealMaintenance :
           extraRealInterest - extraRealTaxSavings,
         realNetRentCost: netRentCostReal,
         realFinalHomeValue: finalHomeValueReal,
@@ -441,8 +441,8 @@ export default function MortgageCalculator() {
         rental: enableRentalComparison ? {
           monthlyPayment: mortgagePayment * (1 - rentalDiscountPercent / 100),
           totalCost: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths,
-          investmentGain: leftover * totalMonths * (1 + investmentMonthlyRate), // Always invest leftover when renting
-          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + (leftover * totalMonths * (1 + investmentMonthlyRate))
+          investmentGain: (leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate), // Invest leftover after paying rent
+          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + ((leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       accelerated: {
@@ -453,8 +453,8 @@ export default function MortgageCalculator() {
         locInterest: accTotalLocInterest,
         totalTaxSavings: accTotalTaxSavings,
         totalMaintenance: accTotalMaintenance,
-        netInterest: enableRentalComparison ? 
-          accTotalInterest + accTotalLocInterest - accTotalTaxSavings + accTotalMaintenance : 
+        netInterest: enableRentalComparison ?
+          accTotalInterest + accTotalLocInterest - accTotalTaxSavings + accTotalMaintenance :
           accTotalInterest + accTotalLocInterest - accTotalTaxSavings,
         netRentCost: netRentCost,
         finalHomeValue: finalHomeValue,
@@ -464,8 +464,8 @@ export default function MortgageCalculator() {
         realLocInterest: accRealLocInterest,
         realTotalTaxSavings: accRealTaxSavings,
         realTotalMaintenance: accRealMaintenance,
-        realNetInterest: enableRentalComparison ? 
-          (accRealInterest + accRealLocInterest) - accRealTaxSavings + accRealMaintenance : 
+        realNetInterest: enableRentalComparison ?
+          (accRealInterest + accRealLocInterest) - accRealTaxSavings + accRealMaintenance :
           (accRealInterest + accRealLocInterest) - accRealTaxSavings,
         realNetRentCost: netRentCostReal,
         realFinalHomeValue: finalHomeValueReal,
@@ -473,8 +473,8 @@ export default function MortgageCalculator() {
         rental: enableRentalComparison ? {
           monthlyPayment: mortgagePayment * (1 - rentalDiscountPercent / 100),
           totalCost: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths,
-          investmentGain: leftover * totalMonths * (1 + investmentMonthlyRate), // Always invest leftover when renting
-          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + (leftover * totalMonths * (1 + investmentMonthlyRate))
+          investmentGain: (leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate), // Invest leftover after paying rent
+          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + ((leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       investment: {
@@ -483,13 +483,13 @@ export default function MortgageCalculator() {
         totalInterest: invTotalInterest,
         totalTaxSavings: invTotalTaxSavings,
         totalMaintenance: invTotalMaintenance,
-        netInterest: enableRentalComparison ? 
-          invTotalInterest - invTotalTaxSavings + invTotalMaintenance : 
+        netInterest: enableRentalComparison ?
+          invTotalInterest - invTotalTaxSavings + invTotalMaintenance :
           invTotalInterest - invTotalTaxSavings,
         monthlyPayment: mortgagePayment,
         investmentBalance: finalInvestmentBalance,
-        netPosition: enableRentalComparison ? 
-          finalInvestmentBalance - (invTotalInterest - invTotalTaxSavings + invTotalMaintenance) : 
+        netPosition: enableRentalComparison ?
+          finalInvestmentBalance - (invTotalInterest - invTotalTaxSavings + invTotalMaintenance) :
           finalInvestmentBalance - (invTotalInterest - invTotalTaxSavings),
         netRentCost: netRentCost,
         finalHomeValue: finalHomeValue,
@@ -497,8 +497,8 @@ export default function MortgageCalculator() {
         realTotalInterest: invRealInterest,
         realTotalTaxSavings: invRealTaxSavings,
         realTotalMaintenance: invRealMaintenance,
-        realNetInterest: enableRentalComparison ? 
-          invRealInterest - invRealTaxSavings + invRealMaintenance : 
+        realNetInterest: enableRentalComparison ?
+          invRealInterest - invRealTaxSavings + invRealMaintenance :
           invRealInterest - invRealTaxSavings,
         realInvestmentBalance: invRealInvestmentBalance,
         realNetPosition: invRealNetPosition,
@@ -508,8 +508,8 @@ export default function MortgageCalculator() {
         rental: enableRentalComparison ? {
           monthlyPayment: mortgagePayment * (1 - rentalDiscountPercent / 100),
           totalCost: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths,
-          investmentGain: leftover * totalMonths * (1 + investmentMonthlyRate), // Always invest leftover when renting
-          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + (leftover * totalMonths * (1 + investmentMonthlyRate))
+          investmentGain: (leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate), // Invest leftover after paying rent
+          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + ((leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       rental,
@@ -726,7 +726,7 @@ export default function MortgageCalculator() {
 
             <div className="pt-2 border-t border-gray-200">
               <div className="text-sm font-medium text-gray-700">
-                Monthly Leftover (after housing): <span className="text-green-600">{formatCurrency(calculations.leftover)}</span>
+                Monthly Leftover (after expenses): <span className="text-green-600">{formatCurrency(calculations.leftover)}</span>
               </div>
             </div>
           </div>
