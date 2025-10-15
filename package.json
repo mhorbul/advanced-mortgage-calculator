@@ -2,6 +2,7 @@
   "name": "mortgage-calculator",
   "version": "1.0.0",
   "description": "Mortgage payoff strategy comparison tool with inflation adjustment",
+  "homepage": "https://mhorbul.github.io/morgage-calculator",
   "main": "index.js",
   "scripts": {
     "start": "react-scripts start",
