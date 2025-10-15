@@ -363,6 +363,9 @@ export default function MortgageCalculator() {
       // Net position: investment gains + home appreciation - rent paid
       // Note: We don't subtract maintenance because renter doesn't pay maintenance
       const rentalNetPosition = rentalInvestmentBalance + currentHomeValue - rentalTotalRent;
+      
+      // For comparison purposes, we want just investment gain minus rent cost (no home appreciation)
+      const rentalComparisonValue = rentalInvestmentBalance - rentalTotalRent;
 
       rental = {
         months: rentalMonths,
@@ -372,6 +375,7 @@ export default function MortgageCalculator() {
         investmentBalance: rentalInvestmentBalance,
         homeValue: currentHomeValue,
         netPosition: rentalNetPosition,
+        comparisonValue: rentalComparisonValue, // For chart comparison
         monthlyRent: rentalCost
       };
     }
@@ -502,7 +506,7 @@ export default function MortgageCalculator() {
 
     // Add rental strategy only if enabled
     if (calculations.rental) {
-      strategies.push({ name: 'Rent & Invest', value: calculations.rental.netPosition, netWorth: calculations.rental.netPosition });
+      strategies.push({ name: 'Rent & Invest', value: calculations.rental.comparisonValue, netWorth: calculations.rental.comparisonValue });
     }
 
     return strategies.reduce((best, current) =>
@@ -1034,7 +1038,7 @@ export default function MortgageCalculator() {
                 { strategy: 'Extra Principal', value: -calculations.extraPayment.netInterest },
                 { strategy: 'LOC Strategy', value: -calculations.accelerated.netInterest },
                 { strategy: 'Invest & Pay', value: calculations.investment.netPosition },
-                ...(calculations.rental ? [{ strategy: 'Rent & Invest', value: calculations.rental.netPosition }] : [])
+                ...(calculations.rental ? [{ strategy: 'Rent & Invest', value: calculations.rental.comparisonValue }] : [])
               ]}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="strategy" angle={-20} textAnchor="end" height={80} />
