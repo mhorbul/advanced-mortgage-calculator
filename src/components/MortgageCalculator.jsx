@@ -418,7 +418,7 @@ export default function MortgageCalculator() {
           tradTotalInterest - tradTotalTaxSavings,
         monthlyPayment: mortgagePayment,
         netRentCost: netRentCost,
-        finalHomeValue: finalHomeValue,
+        finalHomeValue: homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, tradMonths), // Home value at traditional payoff time
         // Real (inflation-adjusted) values
         realTotalInterest: tradRealInterest,
         realTotalTaxSavings: tradRealTaxSavings,
@@ -427,7 +427,7 @@ export default function MortgageCalculator() {
           tradRealInterest - tradRealTaxSavings + tradRealMaintenance :
           tradRealInterest - tradRealTaxSavings,
         realNetRentCost: netRentCostReal,
-        realFinalHomeValue: finalHomeValueReal,
+        realFinalHomeValue: (homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, tradMonths)) / Math.pow(1 + inflationMonthlyRate, tradMonths),
         // Rental subsection data
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
@@ -447,7 +447,7 @@ export default function MortgageCalculator() {
           extraTotalInterest - extraTotalTaxSavings,
         monthlyPayment: mortgagePayment + leftover,
         netRentCost: netRentCost,
-        finalHomeValue: finalHomeValue,
+        finalHomeValue: homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, extraMonths), // Home value at extra payment payoff time
         // Real (inflation-adjusted) values
         realTotalInterest: extraRealInterest,
         realTotalTaxSavings: extraRealTaxSavings,
@@ -456,7 +456,7 @@ export default function MortgageCalculator() {
           extraRealInterest - extraRealTaxSavings + extraRealMaintenance :
           extraRealInterest - extraRealTaxSavings,
         realNetRentCost: netRentCostReal,
-        realFinalHomeValue: finalHomeValueReal,
+        realFinalHomeValue: (homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, extraMonths)) / Math.pow(1 + inflationMonthlyRate, extraMonths),
         // Rental subsection data
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
@@ -477,7 +477,7 @@ export default function MortgageCalculator() {
           accTotalInterest + accTotalLocInterest - accTotalTaxSavings + accTotalMaintenance :
           accTotalInterest + accTotalLocInterest - accTotalTaxSavings,
         netRentCost: netRentCost,
-        finalHomeValue: finalHomeValue,
+        finalHomeValue: homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, accMonths), // Home value at LOC strategy payoff time
         // Real (inflation-adjusted) values
         realTotalInterest: accRealInterest + accRealLocInterest,
         realMortgageInterest: accRealInterest,
@@ -488,7 +488,7 @@ export default function MortgageCalculator() {
           (accRealInterest + accRealLocInterest) - accRealTaxSavings + accRealMaintenance :
           (accRealInterest + accRealLocInterest) - accRealTaxSavings,
         realNetRentCost: netRentCostReal,
-        realFinalHomeValue: finalHomeValueReal,
+        realFinalHomeValue: (homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, accMonths)) / Math.pow(1 + inflationMonthlyRate, accMonths),
         // Rental subsection data
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
@@ -512,7 +512,7 @@ export default function MortgageCalculator() {
           finalInvestmentBalance - (invTotalInterest - invTotalTaxSavings + invTotalMaintenance) :
           finalInvestmentBalance - (invTotalInterest - invTotalTaxSavings),
         netRentCost: netRentCost,
-        finalHomeValue: finalHomeValue,
+        finalHomeValue: homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, invMonths), // Home value at investment strategy payoff time
         // Real (inflation-adjusted) values
         realTotalInterest: invRealInterest,
         realTotalTaxSavings: invRealTaxSavings,
@@ -523,7 +523,7 @@ export default function MortgageCalculator() {
         realInvestmentBalance: invRealInvestmentBalance,
         realNetPosition: invRealNetPosition,
         realNetRentCost: netRentCostReal,
-        realFinalHomeValue: finalHomeValueReal,
+        realFinalHomeValue: (homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, invMonths)) / Math.pow(1 + inflationMonthlyRate, invMonths),
         // Rental subsection data
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
