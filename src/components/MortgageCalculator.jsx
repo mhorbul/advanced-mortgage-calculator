@@ -599,7 +599,7 @@ export default function MortgageCalculator() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Expenses</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Expenses (including mortgage/rent payment)</label>
               <input
                 type="number"
                 value={inputs.monthlyExpenses}
