@@ -12,7 +12,6 @@ export default function MortgageCalculator() {
     locRate: 15,
     taxRate: 24,
     investmentReturn: 8,
-    inflationRate: 3,
     maintenanceRate: 1.5,
     homeAppreciationRate: 3.5,
     rentalDiscountPercent: 10,
@@ -44,7 +43,6 @@ export default function MortgageCalculator() {
       locRate,
       taxRate,
       investmentReturn,
-      inflationRate,
       maintenanceRate,
       homeAppreciationRate,
       rentalDiscountPercent,
@@ -62,7 +60,6 @@ export default function MortgageCalculator() {
     const safeLocRate = locRate === '' ? 0 : locRate;
     const safeInvestmentReturn = investmentReturn === '' ? 0 : investmentReturn;
     const safeTaxRate = taxRate === '' ? 0 : taxRate;
-    const safeInflationRate = inflationRate === '' ? 0 : inflationRate;
     const safeHomeAppreciationRate = homeAppreciationRate === '' ? 0 : homeAppreciationRate;
     const safeRentalDiscountPercent = rentalDiscountPercent === '' ? 0 : rentalDiscountPercent;
 
@@ -72,7 +69,6 @@ export default function MortgageCalculator() {
     const mortgageMonthlyRate = safeMortgageRate / 100 / 12;
     const locMonthlyRate = safeLocRate / 100 / 12;
     const investmentMonthlyRate = safeInvestmentReturn / 100 / 12;
-    const inflationMonthlyRate = safeInflationRate / 100 / 12;
     const totalMonths = safeMortgageYears * 12;
 
     // Calculate traditional mortgage payment
@@ -82,13 +78,13 @@ export default function MortgageCalculator() {
 
     // Calculate monthly maintenance cost
     const monthlyMaintenanceCost = (homeValue * safeMaintenanceRate / 100) / 12;
-    
+
     // Calculate total monthly costs
     const totalMonthlyCosts = safeMonthlyExpenses + mortgagePayment + monthlyMaintenanceCost;
-    
+
     // Calculate leftover after all costs
     const leftover = safeMonthlyIncome - totalMonthlyCosts;
-    
+
     // Validation: warn if total costs exceed income
     const costExceedsIncome = totalMonthlyCosts > safeMonthlyIncome;
 
@@ -122,16 +118,14 @@ export default function MortgageCalculator() {
       // Calculate what you would have paid in rent over the mortgage term
       const rentalCost = mortgagePayment * (1 - safeRentalDiscountPercent / 100);
       const totalRentPaid = rentalCost * totalMonths;
-      const rentInflationAdjustment = Math.pow(1 + inflationMonthlyRate, totalMonths);
-      const realTotalRentPaid = totalRentPaid / rentInflationAdjustment;
       
       // Calculate home value at end of mortgage term
       finalHomeValue = homeValue * Math.pow(1 + safeHomeAppreciationRate / 100 / 12, totalMonths);
-      finalHomeValueReal = finalHomeValue / rentInflationAdjustment;
+      finalHomeValueReal = finalHomeValue;
       
       // Net rent cost is the difference between what you paid in mortgage vs rent
       netRentCost = (mortgagePayment * totalMonths) - totalRentPaid;
-      netRentCostReal = netRentCost / rentInflationAdjustment;
+      netRentCostReal = netRentCost;
     }
 
     // Traditional Method (Scheduled Payments Only)
@@ -174,12 +168,6 @@ export default function MortgageCalculator() {
       }
     }
 
-    // Calculate inflation-adjusted values for traditional method
-    const tradInflationAdjustment = Math.pow(1 + inflationMonthlyRate, tradMonths);
-    const tradRealInterest = tradTotalInterest / tradInflationAdjustment;
-    const tradRealTaxSavings = tradTotalTaxSavings / tradInflationAdjustment;
-    const tradRealMaintenance = tradTotalMaintenance / tradInflationAdjustment;
-    const tradRealNetInterest = tradRealInterest - tradRealTaxSavings + tradRealMaintenance;
 
     // Extra Payment Method (Leftover goes to principal)
     let extraBalance = mortgageBalance;
@@ -221,12 +209,6 @@ export default function MortgageCalculator() {
       }
     }
 
-    // Calculate inflation-adjusted values for extra payment method
-    const extraInflationAdjustment = Math.pow(1 + inflationMonthlyRate, extraMonths);
-    const extraRealInterest = extraTotalInterest / extraInflationAdjustment;
-    const extraRealTaxSavings = extraTotalTaxSavings / extraInflationAdjustment;
-    const extraRealMaintenance = extraTotalMaintenance / extraInflationAdjustment;
-    const extraRealNetInterest = extraRealInterest - extraRealTaxSavings + extraRealMaintenance;
 
     // Line of Credit Accelerated Method
     let accBalance = mortgageBalance;
@@ -295,13 +277,6 @@ export default function MortgageCalculator() {
       }
     }
 
-    // Calculate inflation-adjusted values for LOC method
-    const accInflationAdjustment = Math.pow(1 + inflationMonthlyRate, accMonths);
-    const accRealInterest = accTotalInterest / accInflationAdjustment;
-    const accRealLocInterest = accTotalLocInterest / accInflationAdjustment;
-    const accRealTaxSavings = accTotalTaxSavings / accInflationAdjustment;
-    const accRealMaintenance = accTotalMaintenance / accInflationAdjustment;
-    const accRealNetInterest = (accRealInterest + accRealLocInterest) - accRealTaxSavings + accRealMaintenance;
 
     // Investment Method (Pay mortgage normally, invest leftover)
     let invBalance = mortgageBalance;
@@ -346,15 +321,6 @@ export default function MortgageCalculator() {
 
     const finalInvestmentBalance = investmentBalance;
 
-    // Calculate inflation-adjusted values for investment method
-    const invInflationAdjustment = Math.pow(1 + inflationMonthlyRate, invMonths);
-    const invRealInterest = invTotalInterest / invInflationAdjustment;
-    const invRealTaxSavings = invTotalTaxSavings / invInflationAdjustment;
-    const invRealInvestmentBalance = finalInvestmentBalance / invInflationAdjustment;
-    const invRealMaintenance = invTotalMaintenance / invInflationAdjustment;
-    const invRealNetPosition = enableRentalComparison ?
-      invRealInvestmentBalance - (invRealInterest - invRealTaxSavings + invRealMaintenance) :
-      invRealInvestmentBalance - (invRealInterest - invRealTaxSavings);
 
     // Rental Strategy (Rent instead of buying) - Only if enabled
     let rental = null;
@@ -395,15 +361,9 @@ export default function MortgageCalculator() {
         }
       }
 
-      // Calculate inflation-adjusted values for rental method
-      const rentalInflationAdjustment = Math.pow(1 + inflationMonthlyRate, rentalMonths);
-      const rentalRealTotalRent = rentalTotalRent / rentalInflationAdjustment;
-      const rentalRealInvestmentBalance = rentalInvestmentBalance / rentalInflationAdjustment;
-      const rentalRealHomeValue = currentHomeValue / rentalInflationAdjustment;
-
       // Net position: investment gains + home appreciation - rent paid
       // Note: We don't subtract maintenance because renter doesn't pay maintenance
-      const rentalNetPosition = rentalRealInvestmentBalance + rentalRealHomeValue - rentalRealTotalRent;
+      const rentalNetPosition = rentalInvestmentBalance + currentHomeValue - rentalTotalRent;
 
       rental = {
         months: rentalMonths,
@@ -413,12 +373,7 @@ export default function MortgageCalculator() {
         investmentBalance: rentalInvestmentBalance,
         homeValue: currentHomeValue,
         netPosition: rentalNetPosition,
-        monthlyRent: rentalCost,
-        // Real (inflation-adjusted) values
-        realTotalRent: rentalRealTotalRent,
-        realInvestmentBalance: rentalRealInvestmentBalance,
-        realHomeValue: rentalRealHomeValue,
-        realNetPosition: rentalNetPosition
+        monthlyRent: rentalCost
       };
     }
 
@@ -449,15 +404,6 @@ export default function MortgageCalculator() {
         monthlyPayment: mortgagePayment,
         netRentCost: netRentCost,
         finalHomeValue: homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, tradMonths), // Home value at traditional payoff time
-        // Real (inflation-adjusted) values
-        realTotalInterest: tradRealInterest,
-        realTotalTaxSavings: tradRealTaxSavings,
-        realTotalMaintenance: tradRealMaintenance,
-        realNetInterest: enableRentalComparison ?
-          tradRealInterest - tradRealTaxSavings + tradRealMaintenance :
-          tradRealInterest - tradRealTaxSavings,
-        realNetRentCost: netRentCostReal,
-        realFinalHomeValue: (homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, tradMonths)) / Math.pow(1 + inflationMonthlyRate, tradMonths),
         // Rental subsection data
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
@@ -478,15 +424,6 @@ export default function MortgageCalculator() {
         monthlyPayment: mortgagePayment + leftover,
         netRentCost: netRentCost,
         finalHomeValue: homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, extraMonths), // Home value at extra payment payoff time
-        // Real (inflation-adjusted) values
-        realTotalInterest: extraRealInterest,
-        realTotalTaxSavings: extraRealTaxSavings,
-        realTotalMaintenance: extraRealMaintenance,
-        realNetInterest: enableRentalComparison ?
-          extraRealInterest - extraRealTaxSavings + extraRealMaintenance :
-          extraRealInterest - extraRealTaxSavings,
-        realNetRentCost: netRentCostReal,
-        realFinalHomeValue: (homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, extraMonths)) / Math.pow(1 + inflationMonthlyRate, extraMonths),
         // Rental subsection data
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
@@ -508,17 +445,6 @@ export default function MortgageCalculator() {
           accTotalInterest + accTotalLocInterest - accTotalTaxSavings,
         netRentCost: netRentCost,
         finalHomeValue: homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, accMonths), // Home value at LOC strategy payoff time
-        // Real (inflation-adjusted) values
-        realTotalInterest: accRealInterest + accRealLocInterest,
-        realMortgageInterest: accRealInterest,
-        realLocInterest: accRealLocInterest,
-        realTotalTaxSavings: accRealTaxSavings,
-        realTotalMaintenance: accRealMaintenance,
-        realNetInterest: enableRentalComparison ?
-          (accRealInterest + accRealLocInterest) - accRealTaxSavings + accRealMaintenance :
-          (accRealInterest + accRealLocInterest) - accRealTaxSavings,
-        realNetRentCost: netRentCostReal,
-        realFinalHomeValue: (homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, accMonths)) / Math.pow(1 + inflationMonthlyRate, accMonths),
         // Rental subsection data
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
@@ -543,17 +469,6 @@ export default function MortgageCalculator() {
           finalInvestmentBalance - (invTotalInterest - invTotalTaxSavings),
         netRentCost: netRentCost,
         finalHomeValue: homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, invMonths), // Home value at investment strategy payoff time
-        // Real (inflation-adjusted) values
-        realTotalInterest: invRealInterest,
-        realTotalTaxSavings: invRealTaxSavings,
-        realTotalMaintenance: invRealMaintenance,
-        realNetInterest: enableRentalComparison ?
-          invRealInterest - invRealTaxSavings + invRealMaintenance :
-          invRealInterest - invRealTaxSavings,
-        realInvestmentBalance: invRealInvestmentBalance,
-        realNetPosition: invRealNetPosition,
-        realNetRentCost: netRentCostReal,
-        realFinalHomeValue: (homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, invMonths)) / Math.pow(1 + inflationMonthlyRate, invMonths),
         // Rental subsection data
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
@@ -580,15 +495,15 @@ export default function MortgageCalculator() {
 
   const getBestStrategy = () => {
     const strategies = [
-      { name: 'Traditional', value: -calculations.traditional.realNetInterest, netWorth: -calculations.traditional.realNetInterest },
-      { name: 'Extra Principal', value: -calculations.extraPayment.realNetInterest, netWorth: -calculations.extraPayment.realNetInterest },
-      { name: 'LOC Strategy', value: -calculations.accelerated.realNetInterest, netWorth: -calculations.accelerated.realNetInterest },
-      { name: 'Invest & Pay', value: calculations.investment.realNetPosition, netWorth: calculations.investment.realNetPosition }
+      { name: 'Traditional', value: -calculations.traditional.netInterest, netWorth: -calculations.traditional.netInterest },
+      { name: 'Extra Principal', value: -calculations.extraPayment.netInterest, netWorth: -calculations.extraPayment.netInterest },
+      { name: 'LOC Strategy', value: -calculations.accelerated.netInterest, netWorth: -calculations.accelerated.netInterest },
+      { name: 'Invest & Pay', value: calculations.investment.netPosition, netWorth: calculations.investment.netPosition }
     ];
 
     // Add rental strategy only if enabled
     if (calculations.rental) {
-      strategies.push({ name: 'Rent & Invest', value: calculations.rental.realNetPosition, netWorth: calculations.rental.realNetPosition });
+      strategies.push({ name: 'Rent & Invest', value: calculations.rental.netPosition, netWorth: calculations.rental.netPosition });
     }
 
     return strategies.reduce((best, current) =>
@@ -740,16 +655,6 @@ export default function MortgageCalculator() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Inflation Rate (%)</label>
-              <input
-                type="number"
-                step="0.1"
-                value={inputs.inflationRate}
-                onChange={(e) => handleInputChange('inflationRate', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
 
             <div className="pt-2 border-t border-gray-200">
               <h3 className="text-lg font-semibold text-gray-700 mb-3">Rental Comparison</h3>
@@ -814,14 +719,14 @@ export default function MortgageCalculator() {
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg shadow-md p-6 text-white">
             <h2 className="text-2xl font-bold mb-2">Best Strategy: {best.name}</h2>
             <div className="text-lg">
-              Net Position (Real): <span className="font-bold text-3xl">{formatCurrency(best.netWorth)}</span>
+              Net Position: <span className="font-bold text-3xl">{formatCurrency(best.netWorth)}</span>
             </div>
             <div className="text-sm mt-2 text-green-100">
               {best.name === 'Invest & Pay'
-                ? 'Investment gains exceed interest costs (inflation-adjusted)!'
+                ? 'Investment gains exceed interest costs!'
                 : best.name === 'Rent & Invest'
                 ? 'Renting and investing beats homeownership!'
-                : 'Minimizes total interest paid (inflation-adjusted)'}
+                : 'Minimizes total interest paid'}
             </div>
           </div>
 
@@ -843,17 +748,9 @@ export default function MortgageCalculator() {
                   <span className="text-gray-600">Total Interest:</span>
                   <span className="font-semibold text-red-600">{formatCurrency(calculations.traditional.totalInterest)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>{formatCurrency(calculations.traditional.realTotalInterest)}</span>
-                </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax Savings:</span>
                   <span className="font-semibold text-green-600">-{formatCurrency(calculations.traditional.totalTaxSavings)}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>-{formatCurrency(calculations.traditional.realTotalTaxSavings)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
@@ -861,29 +758,17 @@ export default function MortgageCalculator() {
                       <span className="text-gray-600">Total Maintenance:</span>
                       <span className="font-semibold text-red-600">{formatCurrency(calculations.traditional.totalMaintenance)}</span>
                     </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Real (inflation-adjusted):</span>
-                      <span>{formatCurrency(calculations.traditional.realTotalMaintenance)}</span>
-                    </div>
                   </>
                 )}
                 <div className="flex justify-between pt-2 border-t border-gray-200">
                   <span className="text-gray-700 font-medium">Net Cost:</span>
                   <span className="font-bold text-red-700">{formatCurrency(calculations.traditional.netInterest)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span className="font-semibold">{formatCurrency(calculations.traditional.realNetInterest)}</span>
-                </div>
                 {inputs.enableRentalComparison && (
                   <>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Home Value:</span>
                       <span className="font-semibold text-green-600">{formatCurrency(calculations.traditional.finalHomeValue)}</span>
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Real (inflation-adjusted):</span>
-                      <span>{formatCurrency(calculations.traditional.realFinalHomeValue)}</span>
                     </div>
 
                     {/* Rental Subsection */}
@@ -929,17 +814,9 @@ export default function MortgageCalculator() {
                   <span className="text-gray-600">Total Interest:</span>
                   <span className="font-semibold text-red-600">{formatCurrency(calculations.extraPayment.totalInterest)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>{formatCurrency(calculations.extraPayment.realTotalInterest)}</span>
-                </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax Savings:</span>
                   <span className="font-semibold text-green-600">-{formatCurrency(calculations.extraPayment.totalTaxSavings)}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>-{formatCurrency(calculations.extraPayment.realTotalTaxSavings)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
@@ -947,29 +824,17 @@ export default function MortgageCalculator() {
                       <span className="text-gray-600">Total Maintenance:</span>
                       <span className="font-semibold text-red-600">{formatCurrency(calculations.extraPayment.totalMaintenance)}</span>
                     </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Real (inflation-adjusted):</span>
-                      <span>{formatCurrency(calculations.extraPayment.realTotalMaintenance)}</span>
-                    </div>
                   </>
                 )}
                 <div className="flex justify-between pt-2 border-t border-gray-200">
                   <span className="text-gray-700 font-medium">Net Cost:</span>
                   <span className="font-bold text-blue-700">{formatCurrency(calculations.extraPayment.netInterest)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span className="font-semibold">{formatCurrency(calculations.extraPayment.realNetInterest)}</span>
-                </div>
                 {inputs.enableRentalComparison && (
                   <>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Home Value:</span>
                       <span className="font-semibold text-green-600">{formatCurrency(calculations.extraPayment.finalHomeValue)}</span>
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Real (inflation-adjusted):</span>
-                      <span>{formatCurrency(calculations.extraPayment.realFinalHomeValue)}</span>
                     </div>
 
                     {/* Rental Subsection */}
@@ -1011,33 +876,17 @@ export default function MortgageCalculator() {
                   <span className="text-gray-600 text-xs">Mortgage Interest:</span>
                   <span className="font-semibold text-xs">{formatCurrency(calculations.accelerated.mortgageInterest)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>{formatCurrency(calculations.accelerated.realMortgageInterest)}</span>
-                </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 text-xs">LOC Interest:</span>
                   <span className="font-semibold text-xs">{formatCurrency(calculations.accelerated.locInterest)}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>{formatCurrency(calculations.accelerated.realLocInterest)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Interest:</span>
                   <span className="font-semibold text-red-600">{formatCurrency(calculations.accelerated.totalInterest)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>{formatCurrency(calculations.accelerated.realTotalInterest)}</span>
-                </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax Savings:</span>
                   <span className="font-semibold text-green-600">-{formatCurrency(calculations.accelerated.totalTaxSavings)}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>-{formatCurrency(calculations.accelerated.realTotalTaxSavings)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
@@ -1045,29 +894,17 @@ export default function MortgageCalculator() {
                       <span className="text-gray-600">Total Maintenance:</span>
                       <span className="font-semibold text-red-600">{formatCurrency(calculations.accelerated.totalMaintenance)}</span>
                     </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Real (inflation-adjusted):</span>
-                      <span>{formatCurrency(calculations.accelerated.realTotalMaintenance)}</span>
-                    </div>
                   </>
                 )}
                 <div className="flex justify-between pt-2 border-t border-gray-200">
                   <span className="text-gray-700 font-medium">Net Cost:</span>
                   <span className="font-bold text-green-700">{formatCurrency(calculations.accelerated.netInterest)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span className="font-semibold">{formatCurrency(calculations.accelerated.realNetInterest)}</span>
-                </div>
                 {inputs.enableRentalComparison && (
                   <>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Home Value:</span>
                       <span className="font-semibold text-green-600">{formatCurrency(calculations.accelerated.finalHomeValue)}</span>
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Real (inflation-adjusted):</span>
-                      <span>{formatCurrency(calculations.accelerated.realFinalHomeValue)}</span>
                     </div>
 
                     {/* Rental Subsection */}
@@ -1113,17 +950,9 @@ export default function MortgageCalculator() {
                   <span className="text-gray-600">Total Interest Paid:</span>
                   <span className="font-semibold text-red-600">{formatCurrency(calculations.investment.totalInterest)}</span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>{formatCurrency(calculations.investment.realTotalInterest)}</span>
-                </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax Savings:</span>
                   <span className="font-semibold text-green-600">-{formatCurrency(calculations.investment.totalTaxSavings)}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>-{formatCurrency(calculations.investment.realTotalTaxSavings)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
@@ -1131,19 +960,11 @@ export default function MortgageCalculator() {
                       <span className="text-gray-600">Total Maintenance:</span>
                       <span className="font-semibold text-red-600">{formatCurrency(calculations.investment.totalMaintenance)}</span>
                     </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Real (inflation-adjusted):</span>
-                      <span>{formatCurrency(calculations.investment.realTotalMaintenance)}</span>
-                    </div>
                   </>
                 )}
                 <div className="flex justify-between">
                   <span className="text-gray-600">Investment Gains:</span>
                   <span className="font-semibold text-green-600">{formatCurrency(calculations.investment.investmentBalance)}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>{formatCurrency(calculations.investment.realInvestmentBalance)}</span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-gray-200">
                   <span className="text-gray-700 font-medium">Net Position:</span>
@@ -1151,21 +972,11 @@ export default function MortgageCalculator() {
                     {formatCurrency(calculations.investment.netPosition)}
                   </span>
                 </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span className={`font-semibold ${calculations.investment.realNetPosition > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {formatCurrency(calculations.investment.realNetPosition)}
-                  </span>
-                </div>
                 {inputs.enableRentalComparison && (
                   <>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Home Value:</span>
                       <span className="font-semibold text-green-600">{formatCurrency(calculations.investment.finalHomeValue)}</span>
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Real (inflation-adjusted):</span>
-                      <span>{formatCurrency(calculations.investment.realFinalHomeValue)}</span>
                     </div>
 
                     {/* Rental Subsection */}
@@ -1217,14 +1028,14 @@ export default function MortgageCalculator() {
 
           {/* Net Position Comparison */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Final Net Position Comparison (Real Values)</h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Final Net Position Comparison</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={[
-                { strategy: 'Traditional', value: -calculations.traditional.realNetInterest },
-                { strategy: 'Extra Principal', value: -calculations.extraPayment.realNetInterest },
-                { strategy: 'LOC Strategy', value: -calculations.accelerated.realNetInterest },
-                { strategy: 'Invest & Pay', value: calculations.investment.realNetPosition },
-                ...(calculations.rental ? [{ strategy: 'Rent & Invest', value: calculations.rental.realNetPosition }] : [])
+                { strategy: 'Traditional', value: -calculations.traditional.netInterest },
+                { strategy: 'Extra Principal', value: -calculations.extraPayment.netInterest },
+                { strategy: 'LOC Strategy', value: -calculations.accelerated.netInterest },
+                { strategy: 'Invest & Pay', value: calculations.investment.netPosition },
+                ...(calculations.rental ? [{ strategy: 'Rent & Invest', value: calculations.rental.netPosition }] : [])
               ]}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="strategy" angle={-20} textAnchor="end" height={80} />
@@ -1234,7 +1045,7 @@ export default function MortgageCalculator() {
               </BarChart>
             </ResponsiveContainer>
             <p className="text-xs text-gray-600 mt-2 text-center">
-              Real values adjusted for {inputs.inflationRate}% inflation. Positive values = money gained. Negative values = interest cost after tax savings.
+              Positive values = money gained. Negative values = interest cost after tax savings.
             </p>
           </div>
         </div>
