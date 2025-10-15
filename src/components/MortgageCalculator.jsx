@@ -3,14 +3,14 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 
 export default function MortgageCalculator() {
   const [inputs, setInputs] = useState({
-    mortgageBalance: 200000,
+    mortgageBalance: 240000,
     mortgageRate: 6.5,
     mortgageYears: 30,
-    monthlyIncome: 5000,
-    monthlyExpenses: 4000,
+    monthlyIncome: 10000,
+    monthlyExpenses: 8000,
     locLimit: 10000,
-    locRate: 15,
-    taxRate: 24,
+    locRate: 10,
+    taxRate: 22,
     investmentReturn: 8,
     maintenanceRate: 1.5,
     homeAppreciationRate: 3.5,
@@ -118,11 +118,11 @@ export default function MortgageCalculator() {
       // Calculate what you would have paid in rent over the mortgage term
       const rentalCost = mortgagePayment * (1 - safeRentalDiscountPercent / 100);
       const totalRentPaid = rentalCost * totalMonths;
-      
+
       // Calculate home value at end of mortgage term
       finalHomeValue = homeValue * Math.pow(1 + safeHomeAppreciationRate / 100 / 12, totalMonths);
       finalHomeValueReal = finalHomeValue;
-      
+
       // Net rent cost is the difference between what you paid in mortgage vs rent
       netRentCost = (mortgagePayment * totalMonths) - totalRentPaid;
       netRentCostReal = netRentCost;
