@@ -61,13 +61,13 @@ export default function MortgageCalculator() {
 
     // Calculate monthly maintenance cost
     const monthlyMaintenanceCost = (homeValue * maintenanceRate / 100) / 12;
-    
+
     // Calculate total monthly costs
     const totalMonthlyCosts = monthlyExpenses + mortgagePayment + monthlyMaintenanceCost;
-    
+
     // Calculate leftover after all costs
     const leftover = monthlyIncome - totalMonthlyCosts;
-    
+
     // Validation: warn if total costs exceed income
     const costExceedsIncome = totalMonthlyCosts > monthlyIncome;
 
@@ -595,6 +595,11 @@ export default function MortgageCalculator() {
                 onChange={(e) => handleInputChange('mortgageBalance', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              {calculations.costExceedsIncome && (
+                <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+                  <strong>Warning:</strong> Mortgage amount too high. Total costs exceed income.
+                </div>
+              )}
             </div>
 
             <div>
@@ -606,6 +611,11 @@ export default function MortgageCalculator() {
                 onChange={(e) => handleInputChange('mortgageRate', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              {calculations.costExceedsIncome && (
+                <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+                  <strong>Warning:</strong> Mortgage rate too high. Total costs exceed income.
+                </div>
+              )}
             </div>
 
             <div>
@@ -616,6 +626,11 @@ export default function MortgageCalculator() {
                 onChange={(e) => handleInputChange('mortgageYears', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              {calculations.costExceedsIncome && (
+                <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+                  <strong>Warning:</strong> Mortgage term too short. Total costs exceed income.
+                </div>
+              )}
             </div>
 
             <div>
@@ -637,6 +652,11 @@ export default function MortgageCalculator() {
                 onChange={(e) => handleInputChange('monthlyExpenses', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              {calculations.costExceedsIncome && (
+                <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+                  <strong>Warning:</strong> Total monthly costs exceed income. Expenses + Mortgage Payment + Maintenance should not be greater than income.
+                </div>
+              )}
             </div>
 
             <div>
@@ -649,6 +669,11 @@ export default function MortgageCalculator() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <p className="text-xs text-gray-500 mt-1">For owned properties only</p>
+              {calculations.costExceedsIncome && (
+                <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+                  <strong>Warning:</strong> Maintenance rate too high. Total costs exceed income.
+                </div>
+              )}
             </div>
 
             <div>
@@ -758,11 +783,6 @@ export default function MortgageCalculator() {
               <div className="text-sm font-medium text-gray-700">
                 Monthly Leftover (after all costs): <span className="text-green-600">{formatCurrency(calculations.leftover)}</span>
               </div>
-              {calculations.costExceedsIncome && (
-                <div className="mt-2 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-                  <strong>Warning:</strong> Total monthly costs exceed income. This will result in negative leftover money.
-                </div>
-              )}
             </div>
           </div>
         </div>
