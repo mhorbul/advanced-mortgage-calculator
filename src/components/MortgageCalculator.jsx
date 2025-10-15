@@ -59,8 +59,17 @@ export default function MortgageCalculator() {
       (mortgageMonthlyRate * Math.pow(1 + mortgageMonthlyRate, totalMonths)) /
       (Math.pow(1 + mortgageMonthlyRate, totalMonths) - 1);
 
-    // Calculate leftover after basic expenses (not including housing)
-    const leftover = monthlyIncome - monthlyExpenses;
+    // Calculate monthly maintenance cost
+    const monthlyMaintenanceCost = (homeValue * maintenanceRate / 100) / 12;
+    
+    // Calculate total monthly costs
+    const totalMonthlyCosts = monthlyExpenses + mortgagePayment + monthlyMaintenanceCost;
+    
+    // Calculate leftover after all costs
+    const leftover = monthlyIncome - totalMonthlyCosts;
+    
+    // Validation: warn if total costs exceed income
+    const costExceedsIncome = totalMonthlyCosts > monthlyIncome;
 
     // Calculate rental-specific values when rental comparison is enabled
     let rentalPayment = 0;
@@ -534,7 +543,8 @@ export default function MortgageCalculator() {
       },
       rental,
       chartData,
-      leftover
+      leftover,
+      costExceedsIncome
     };
   }, [inputs]);
 
@@ -620,13 +630,25 @@ export default function MortgageCalculator() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Expenses</label>
-              <p className="text-xs text-gray-500 mb-1">(including mortgage/rent payment)</p>
+              <p className="text-xs text-gray-500 mb-1">(excluding mortgage payment and maintenance)</p>
               <input
                 type="number"
                 value={inputs.monthlyExpenses}
                 onChange={(e) => handleInputChange('monthlyExpenses', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Maintenance Rate (% of home value/year)</label>
+              <input
+                type="number"
+                step="0.1"
+                value={inputs.maintenanceRate}
+                onChange={(e) => handleInputChange('maintenanceRate', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <p className="text-xs text-gray-500 mt-1">For owned properties only</p>
             </div>
 
             <div>
@@ -704,19 +726,6 @@ export default function MortgageCalculator() {
               )}
             </div>
 
-            {inputs.enableRentalComparison && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Maintenance Rate (% of home value/year)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={inputs.maintenanceRate}
-                  onChange={(e) => handleInputChange('maintenanceRate', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <p className="text-xs text-gray-500 mt-1">For owned properties only</p>
-              </div>
-            )}
 
             {inputs.enableRentalComparison && (
               <>
@@ -747,8 +756,13 @@ export default function MortgageCalculator() {
 
             <div className="pt-2 border-t border-gray-200">
               <div className="text-sm font-medium text-gray-700">
-                Monthly Leftover (after expenses): <span className="text-green-600">{formatCurrency(calculations.leftover)}</span>
+                Monthly Leftover (after all costs): <span className="text-green-600">{formatCurrency(calculations.leftover)}</span>
               </div>
+              {calculations.costExceedsIncome && (
+                <div className="mt-2 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                  <strong>Warning:</strong> Total monthly costs exceed income. This will result in negative leftover money.
+                </div>
+              )}
             </div>
           </div>
         </div>
