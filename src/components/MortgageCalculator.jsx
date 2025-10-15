@@ -62,6 +62,17 @@ export default function MortgageCalculator() {
     // Calculate leftover after basic expenses (not including housing)
     const leftover = monthlyIncome - monthlyExpenses;
 
+    // Calculate rental-specific values when rental comparison is enabled
+    let rentalPayment = 0;
+    let mortgageRentSavings = 0;
+    let rentalInvestmentAmount = 0;
+    
+    if (enableRentalComparison) {
+      rentalPayment = mortgagePayment * (1 - rentalDiscountPercent / 100);
+      mortgageRentSavings = mortgagePayment - rentalPayment;
+      rentalInvestmentAmount = leftover + mortgageRentSavings;
+    }
+
     // Calculate net rent cost for each strategy (opportunity cost of not renting)
     let netRentCost = 0;
     let netRentCostReal = 0;
@@ -410,10 +421,10 @@ export default function MortgageCalculator() {
         realFinalHomeValue: finalHomeValueReal,
         // Rental subsection data
         rental: enableRentalComparison ? {
-          monthlyPayment: mortgagePayment * (1 - rentalDiscountPercent / 100),
-          totalCost: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths,
-          investmentGain: (leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate), // Invest leftover after paying rent
-          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + ((leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate))
+          monthlyPayment: rentalPayment,
+          totalCost: rentalPayment * totalMonths,
+          investmentGain: rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate), // Invest leftover + mortgage-rent savings
+          total: (rentalPayment * totalMonths) + (rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       extraPayment: {
@@ -439,10 +450,10 @@ export default function MortgageCalculator() {
         realFinalHomeValue: finalHomeValueReal,
         // Rental subsection data
         rental: enableRentalComparison ? {
-          monthlyPayment: mortgagePayment * (1 - rentalDiscountPercent / 100),
-          totalCost: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths,
-          investmentGain: (leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate), // Invest leftover after paying rent
-          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + ((leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate))
+          monthlyPayment: rentalPayment,
+          totalCost: rentalPayment * totalMonths,
+          investmentGain: rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate), // Invest leftover + mortgage-rent savings
+          total: (rentalPayment * totalMonths) + (rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       accelerated: {
@@ -471,10 +482,10 @@ export default function MortgageCalculator() {
         realFinalHomeValue: finalHomeValueReal,
         // Rental subsection data
         rental: enableRentalComparison ? {
-          monthlyPayment: mortgagePayment * (1 - rentalDiscountPercent / 100),
-          totalCost: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths,
-          investmentGain: (leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate), // Invest leftover after paying rent
-          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + ((leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate))
+          monthlyPayment: rentalPayment,
+          totalCost: rentalPayment * totalMonths,
+          investmentGain: rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate), // Invest leftover + mortgage-rent savings
+          total: (rentalPayment * totalMonths) + (rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       investment: {
@@ -506,10 +517,10 @@ export default function MortgageCalculator() {
         realFinalHomeValue: finalHomeValueReal,
         // Rental subsection data
         rental: enableRentalComparison ? {
-          monthlyPayment: mortgagePayment * (1 - rentalDiscountPercent / 100),
-          totalCost: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths,
-          investmentGain: (leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate), // Invest leftover after paying rent
-          total: (mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths + ((leftover - mortgagePayment * (1 - rentalDiscountPercent / 100)) * totalMonths * (1 + investmentMonthlyRate))
+          monthlyPayment: rentalPayment,
+          totalCost: rentalPayment * totalMonths,
+          investmentGain: rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate), // Invest leftover + mortgage-rent savings
+          total: (rentalPayment * totalMonths) + (rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       rental,
