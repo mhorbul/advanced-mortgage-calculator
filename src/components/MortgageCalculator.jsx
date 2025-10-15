@@ -66,7 +66,7 @@ export default function MortgageCalculator() {
     let rentalPayment = 0;
     let mortgageRentSavings = 0;
     let rentalInvestmentAmount = 0;
-    
+
     if (enableRentalComparison) {
       rentalPayment = mortgagePayment * (1 - rentalDiscountPercent / 100);
       mortgageRentSavings = mortgagePayment - rentalPayment;
@@ -423,8 +423,8 @@ export default function MortgageCalculator() {
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
           totalCost: rentalPayment * totalMonths,
-          investmentGain: rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate), // Invest leftover + mortgage-rent savings
-          total: (rentalPayment * totalMonths) + (rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate))
+          investmentGain: (leftover + mortgageRentSavings) * totalMonths * (1 + investmentMonthlyRate), // Traditional: invest all leftover + savings
+          total: (rentalPayment * totalMonths) + ((leftover + mortgageRentSavings) * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       extraPayment: {
@@ -452,8 +452,8 @@ export default function MortgageCalculator() {
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
           totalCost: rentalPayment * totalMonths,
-          investmentGain: rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate), // Invest leftover + mortgage-rent savings
-          total: (rentalPayment * totalMonths) + (rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate))
+          investmentGain: (leftover + mortgageRentSavings) * totalMonths * (1 + investmentMonthlyRate), // Extra Payment: invest all leftover + savings
+          total: (rentalPayment * totalMonths) + ((leftover + mortgageRentSavings) * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       accelerated: {
@@ -484,8 +484,8 @@ export default function MortgageCalculator() {
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
           totalCost: rentalPayment * totalMonths,
-          investmentGain: rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate), // Invest leftover + mortgage-rent savings
-          total: (rentalPayment * totalMonths) + (rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate))
+          investmentGain: (leftover + mortgageRentSavings) * totalMonths * (1 + investmentMonthlyRate), // LOC Strategy: invest all leftover + savings
+          total: (rentalPayment * totalMonths) + ((leftover + mortgageRentSavings) * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       investment: {
@@ -519,8 +519,8 @@ export default function MortgageCalculator() {
         rental: enableRentalComparison ? {
           monthlyPayment: rentalPayment,
           totalCost: rentalPayment * totalMonths,
-          investmentGain: rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate), // Invest leftover + mortgage-rent savings
-          total: (rentalPayment * totalMonths) + (rentalInvestmentAmount * totalMonths * (1 + investmentMonthlyRate))
+          investmentGain: (leftover + mortgageRentSavings) * totalMonths * (1 + investmentMonthlyRate), // Investment Strategy: invest all leftover + savings (same as others)
+          total: (rentalPayment * totalMonths) + ((leftover + mortgageRentSavings) * totalMonths * (1 + investmentMonthlyRate))
         } : null
       },
       rental,
