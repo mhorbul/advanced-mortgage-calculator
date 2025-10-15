@@ -721,7 +721,7 @@ export default function MortgageCalculator() {
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg shadow-md p-6 text-white">
             <h2 className="text-2xl font-bold mb-2">Best Strategy: {best.name}</h2>
             <div className="text-lg">
-              Net Position: <span className="font-bold text-3xl">{formatCurrency(best.netWorth)}</span>
+              {best.netWorth >= 0 ? 'Net Position' : 'Net Cost'}: <span className="font-bold text-3xl">{formatCurrency(best.netWorth)}</span>
             </div>
             <div className="text-sm mt-2 text-green-100">
               {best.name === 'Invest & Pay'
@@ -967,7 +967,7 @@ export default function MortgageCalculator() {
                   <span className="font-semibold text-green-600">{formatCurrency(calculations.investment.investmentBalance)}</span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-gray-200">
-                  <span className="text-gray-700 font-medium">Net Position:</span>
+                  <span className="text-gray-700 font-medium">{calculations.investment.netPosition >= 0 ? 'Net Position' : 'Net Cost'}:</span>
                   <span className={`font-bold ${calculations.investment.netPosition > 0 ? 'text-green-700' : 'text-red-700'}`}>
                     {formatCurrency(calculations.investment.netPosition)}
                   </span>
@@ -1039,7 +1039,7 @@ export default function MortgageCalculator() {
               ]}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="strategy" angle={-20} textAnchor="end" height={80} />
-                <YAxis label={{ value: 'Net Position ($)', angle: -90, position: 'insideLeft' }} />
+                <YAxis label={{ value: 'Net Position/Cost ($)', angle: -90, position: 'insideLeft' }} />
                 <Tooltip formatter={(value) => formatCurrency(value)} />
                 <Bar dataKey="value" fill="#8b5cf6" />
               </BarChart>
