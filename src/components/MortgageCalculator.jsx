@@ -505,10 +505,8 @@ export default function MortgageCalculator() {
       { name: 'Invest & Pay', value: calculations.investment.netPosition, netWorth: calculations.investment.netPosition }
     ];
 
-    // Add rental strategy only if enabled
-    if (calculations.rental) {
-      strategies.push({ name: 'Rent & Invest', value: calculations.rental.comparisonValue, netWorth: calculations.rental.comparisonValue });
-    }
+    // Note: Rental strategy is not included in "Best Strategy" comparison
+    // It's only shown in the comparison chart for reference
 
     return strategies.reduce((best, current) =>
       current.netWorth > best.netWorth ? current : best
@@ -728,8 +726,6 @@ export default function MortgageCalculator() {
             <div className="text-sm mt-2 text-green-100">
               {best.name === 'Invest & Pay'
                 ? 'Investment gains exceed interest costs!'
-                : best.name === 'Rent & Invest'
-                ? 'Renting and investing beats homeownership!'
                 : 'Minimizes total interest paid'}
             </div>
           </div>
