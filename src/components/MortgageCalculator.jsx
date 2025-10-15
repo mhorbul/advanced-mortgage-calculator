@@ -13,7 +13,6 @@ export default function MortgageCalculator() {
     taxRate: 24,
     investmentReturn: 8,
     inflationRate: 3,
-    homeValue: 250000,
     maintenanceRate: 1.5,
     homeAppreciationRate: 3.5,
     rentalDiscountPercent: 10
@@ -35,11 +34,13 @@ export default function MortgageCalculator() {
       taxRate,
       investmentReturn,
       inflationRate,
-      homeValue,
       maintenanceRate,
       homeAppreciationRate,
       rentalDiscountPercent
     } = inputs;
+
+    // Calculate home value from mortgage balance (80% LTV)
+    const homeValue = mortgageBalance / 0.8;
 
     const leftover = monthlyIncome - monthlyExpenses;
     const mortgageMonthlyRate = mortgageRate / 100 / 12;
@@ -239,27 +240,23 @@ export default function MortgageCalculator() {
     const rentalCost = mortgagePayment * (1 - rentalDiscountPercent / 100);
     
     let rentalTotalRent = 0;
-    let rentalTotalMaintenance = 0;
     let rentalTotalInvestment = 0;
     let rentalMonths = 0;
     let rentalInvestmentBalance = 0;
     let currentHomeValue = homeValue;
     const rentalData = [];
 
-    while (rentalMonths < totalMonths * 2) {
+    // Calculate for the mortgage term period only
+    while (rentalMonths < totalMonths) {
       // Pay rent
       rentalTotalRent += rentalCost;
       
-      // Calculate maintenance costs (as if we owned the home)
-      const monthlyMaintenance = currentHomeValue * monthlyMaintenanceRate;
-      rentalTotalMaintenance += monthlyMaintenance;
-      
-      // Invest the difference between mortgage payment and rent + maintenance
-      const investmentAmount = mortgagePayment - rentalCost - monthlyMaintenance;
+      // Invest the difference between mortgage payment and rent
+      const investmentAmount = mortgagePayment - rentalCost;
       rentalInvestmentBalance = rentalInvestmentBalance * (1 + investmentMonthlyRate) + investmentAmount;
       rentalTotalInvestment += investmentAmount;
       
-      // Home appreciation
+      // Home appreciation (for comparison)
       currentHomeValue *= (1 + homeAppreciationMonthlyRate);
       
       rentalMonths++;
@@ -275,12 +272,12 @@ export default function MortgageCalculator() {
     // Calculate inflation-adjusted values for rental method
     const rentalInflationAdjustment = Math.pow(1 + inflationMonthlyRate, rentalMonths);
     const rentalRealTotalRent = rentalTotalRent / rentalInflationAdjustment;
-    const rentalRealTotalMaintenance = rentalTotalMaintenance / rentalInflationAdjustment;
     const rentalRealInvestmentBalance = rentalInvestmentBalance / rentalInflationAdjustment;
     const rentalRealHomeValue = currentHomeValue / rentalInflationAdjustment;
     
-    // Net position: investment gains + home appreciation - rent paid - maintenance
-    const rentalNetPosition = rentalRealInvestmentBalance + rentalRealHomeValue - rentalRealTotalRent - rentalRealTotalMaintenance;
+    // Net position: investment gains + home appreciation - rent paid
+    // Note: We don't subtract maintenance because renter doesn't pay maintenance
+    const rentalNetPosition = rentalRealInvestmentBalance + rentalRealHomeValue - rentalRealTotalRent;
 
     // Merge data arrays
     const maxYears = Math.max(tradData.length, extraData.length, accData.length, invData.length, rentalData.length);
@@ -356,7 +353,6 @@ export default function MortgageCalculator() {
         months: rentalMonths,
         years: (rentalMonths / 12).toFixed(1),
         totalRent: rentalTotalRent,
-        totalMaintenance: rentalTotalMaintenance,
         totalInvestment: rentalTotalInvestment,
         investmentBalance: rentalInvestmentBalance,
         homeValue: currentHomeValue,
@@ -364,7 +360,6 @@ export default function MortgageCalculator() {
         monthlyRent: rentalCost,
         // Real (inflation-adjusted) values
         realTotalRent: rentalRealTotalRent,
-        realTotalMaintenance: rentalRealTotalMaintenance,
         realInvestmentBalance: rentalRealInvestmentBalance,
         realHomeValue: rentalRealHomeValue,
         realNetPosition: rentalNetPosition
@@ -391,8 +386,8 @@ export default function MortgageCalculator() {
       { name: 'Invest & Pay', value: calculations.investment.realNetPosition, netWorth: calculations.investment.realNetPosition },
       { name: 'Rent & Invest', value: calculations.rental.realNetPosition, netWorth: calculations.rental.realNetPosition }
     ];
-    
-    return strategies.reduce((best, current) => 
+
+    return strategies.reduce((best, current) =>
       current.netWorth > best.netWorth ? current : best
     );
   };
@@ -516,16 +511,9 @@ export default function MortgageCalculator() {
 
             <div className="pt-2 border-t border-gray-200">
               <h3 className="text-lg font-semibold text-gray-700 mb-3">Rental Comparison</h3>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Home Value</label>
-              <input
-                type="number"
-                value={inputs.homeValue}
-                onChange={(e) => handleInputChange('homeValue', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <div className="text-sm font-medium text-gray-700 mb-3">
+                Calculated Home Value (80% LTV): <span className="text-blue-600">{formatCurrency(inputs.mortgageBalance / 0.8)}</span>
+              </div>
             </div>
 
             <div>
@@ -537,6 +525,7 @@ export default function MortgageCalculator() {
                 onChange={(e) => handleInputChange('maintenanceRate', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-500 mt-1">For owned properties only</p>
             </div>
 
             <div>
@@ -784,14 +773,6 @@ export default function MortgageCalculator() {
                 <div className="flex justify-between text-xs text-gray-500">
                   <span>Real (inflation-adjusted):</span>
                   <span>{formatCurrency(calculations.rental.realTotalRent)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Total Maintenance:</span>
-                  <span className="font-semibold text-red-600">{formatCurrency(calculations.rental.totalMaintenance)}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Real (inflation-adjusted):</span>
-                  <span>{formatCurrency(calculations.rental.realTotalMaintenance)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Investment Gains:</span>
