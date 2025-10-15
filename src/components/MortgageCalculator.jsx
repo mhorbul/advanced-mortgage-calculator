@@ -66,7 +66,7 @@ export default function MortgageCalculator() {
     let rentalPayment = 0;
     let mortgageRentSavings = 0;
     let rentalInvestmentAmount = 0;
-    
+
     if (enableRentalComparison) {
       rentalPayment = mortgagePayment * (1 - rentalDiscountPercent / 100);
       mortgageRentSavings = mortgagePayment - rentalPayment;
@@ -433,7 +433,7 @@ export default function MortgageCalculator() {
           monthlyPayment: rentalPayment,
           totalCost: rentalPayment * tradMonths,
           investmentGain: calculateInvestmentBalance(rentalInvestmentAmount, tradMonths), // Traditional: compound interest for tradMonths
-          total: (rentalPayment * tradMonths) + calculateInvestmentBalance(rentalInvestmentAmount, tradMonths)
+          total: calculateInvestmentBalance(rentalInvestmentAmount, tradMonths) - (rentalPayment * tradMonths) // Investment Gain - Rental Cost
         } : null
       },
       extraPayment: {
@@ -462,7 +462,7 @@ export default function MortgageCalculator() {
           monthlyPayment: rentalPayment,
           totalCost: rentalPayment * extraMonths,
           investmentGain: calculateInvestmentBalance(rentalInvestmentAmount, extraMonths), // Extra Payment: compound interest for extraMonths
-          total: (rentalPayment * extraMonths) + calculateInvestmentBalance(rentalInvestmentAmount, extraMonths)
+          total: calculateInvestmentBalance(rentalInvestmentAmount, extraMonths) - (rentalPayment * extraMonths) // Investment Gain - Rental Cost
         } : null
       },
       accelerated: {
@@ -494,7 +494,7 @@ export default function MortgageCalculator() {
           monthlyPayment: rentalPayment,
           totalCost: rentalPayment * accMonths,
           investmentGain: calculateInvestmentBalance(rentalInvestmentAmount, accMonths), // LOC Strategy: compound interest for accMonths
-          total: (rentalPayment * accMonths) + calculateInvestmentBalance(rentalInvestmentAmount, accMonths)
+          total: calculateInvestmentBalance(rentalInvestmentAmount, accMonths) - (rentalPayment * accMonths) // Investment Gain - Rental Cost
         } : null
       },
       investment: {
@@ -529,7 +529,7 @@ export default function MortgageCalculator() {
           monthlyPayment: rentalPayment,
           totalCost: rentalPayment * invMonths,
           investmentGain: calculateInvestmentBalance(rentalInvestmentAmount, invMonths), // Investment Strategy: compound interest for invMonths
-          total: (rentalPayment * invMonths) + calculateInvestmentBalance(rentalInvestmentAmount, invMonths)
+          total: calculateInvestmentBalance(rentalInvestmentAmount, invMonths) - (rentalPayment * invMonths) // Investment Gain - Rental Cost
         } : null
       },
       rental,
