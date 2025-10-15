@@ -721,7 +721,7 @@ export default function MortgageCalculator() {
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg shadow-md p-6 text-white">
             <h2 className="text-2xl font-bold mb-2">Best Strategy: {best.name}</h2>
             <div className="text-lg">
-              {best.netWorth >= 0 ? 'Net Position' : 'Net Cost'}: <span className="font-bold text-3xl">{formatCurrency(best.netWorth)}</span>
+              {best.netWorth >= 0 ? 'Net Position' : 'Net Cost'}: <span className="font-bold text-3xl">{formatCurrency(best.netWorth >= 0 ? best.netWorth : Math.abs(best.netWorth))}</span>
             </div>
             <div className="text-sm mt-2 text-green-100">
               {best.name === 'Invest & Pay'
@@ -969,7 +969,7 @@ export default function MortgageCalculator() {
                 <div className="flex justify-between pt-2 border-t border-gray-200">
                   <span className="text-gray-700 font-medium">{calculations.investment.netPosition >= 0 ? 'Net Position' : 'Net Cost'}:</span>
                   <span className={`font-bold ${calculations.investment.netPosition > 0 ? 'text-green-700' : 'text-red-700'}`}>
-                    {formatCurrency(calculations.investment.netPosition)}
+                    {formatCurrency(calculations.investment.netPosition >= 0 ? calculations.investment.netPosition : Math.abs(calculations.investment.netPosition))}
                   </span>
                 </div>
                 {inputs.enableRentalComparison && (
