@@ -20,7 +20,13 @@ export default function MortgageCalculator() {
   });
 
   const handleInputChange = (field, value) => {
-    setInputs(prev => ({ ...prev, [field]: parseFloat(value) || 0 }));
+    // Handle empty string as empty string, not 0
+    if (value === '') {
+      setInputs(prev => ({ ...prev, [field]: '' }));
+    } else {
+      const numValue = parseFloat(value);
+      setInputs(prev => ({ ...prev, [field]: isNaN(numValue) ? 0 : numValue }));
+    }
   };
 
   const handleCheckboxChange = (field, checked) => {
@@ -45,31 +51,46 @@ export default function MortgageCalculator() {
       enableRentalComparison
     } = inputs;
 
-    // Calculate home value from mortgage balance (80% LTV)
-    const homeValue = mortgageBalance / 0.8;
+    // Convert empty strings to 0 for calculations
+    const safeMortgageBalance = mortgageBalance === '' ? 0 : mortgageBalance;
+    const safeMortgageRate = mortgageRate === '' ? 0 : mortgageRate;
+    const safeMortgageYears = mortgageYears === '' ? 0 : mortgageYears;
+    const safeMonthlyIncome = monthlyIncome === '' ? 0 : monthlyIncome;
+    const safeMonthlyExpenses = monthlyExpenses === '' ? 0 : monthlyExpenses;
+    const safeMaintenanceRate = maintenanceRate === '' ? 0 : maintenanceRate;
+    const safeLocLimit = locLimit === '' ? 0 : locLimit;
+    const safeLocRate = locRate === '' ? 0 : locRate;
+    const safeInvestmentReturn = investmentReturn === '' ? 0 : investmentReturn;
+    const safeTaxRate = taxRate === '' ? 0 : taxRate;
+    const safeInflationRate = inflationRate === '' ? 0 : inflationRate;
+    const safeHomeAppreciationRate = homeAppreciationRate === '' ? 0 : homeAppreciationRate;
+    const safeRentalDiscountPercent = rentalDiscountPercent === '' ? 0 : rentalDiscountPercent;
 
-    const mortgageMonthlyRate = mortgageRate / 100 / 12;
-    const locMonthlyRate = locRate / 100 / 12;
-    const investmentMonthlyRate = investmentReturn / 100 / 12;
-    const inflationMonthlyRate = inflationRate / 100 / 12;
-    const totalMonths = mortgageYears * 12;
+    // Calculate home value from mortgage balance (80% LTV)
+    const homeValue = safeMortgageBalance / 0.8;
+
+    const mortgageMonthlyRate = safeMortgageRate / 100 / 12;
+    const locMonthlyRate = safeLocRate / 100 / 12;
+    const investmentMonthlyRate = safeInvestmentReturn / 100 / 12;
+    const inflationMonthlyRate = safeInflationRate / 100 / 12;
+    const totalMonths = safeMortgageYears * 12;
 
     // Calculate traditional mortgage payment
-    const mortgagePayment = mortgageBalance *
+    const mortgagePayment = safeMortgageBalance *
       (mortgageMonthlyRate * Math.pow(1 + mortgageMonthlyRate, totalMonths)) /
       (Math.pow(1 + mortgageMonthlyRate, totalMonths) - 1);
 
     // Calculate monthly maintenance cost
-    const monthlyMaintenanceCost = (homeValue * maintenanceRate / 100) / 12;
-
+    const monthlyMaintenanceCost = (homeValue * safeMaintenanceRate / 100) / 12;
+    
     // Calculate total monthly costs
-    const totalMonthlyCosts = monthlyExpenses + mortgagePayment + monthlyMaintenanceCost;
-
+    const totalMonthlyCosts = safeMonthlyExpenses + mortgagePayment + monthlyMaintenanceCost;
+    
     // Calculate leftover after all costs
-    const leftover = monthlyIncome - totalMonthlyCosts;
-
+    const leftover = safeMonthlyIncome - totalMonthlyCosts;
+    
     // Validation: warn if total costs exceed income
-    const costExceedsIncome = totalMonthlyCosts > monthlyIncome;
+    const costExceedsIncome = totalMonthlyCosts > safeMonthlyIncome;
 
     // Calculate rental-specific values when rental comparison is enabled
     let rentalPayment = 0;
@@ -77,7 +98,7 @@ export default function MortgageCalculator() {
     let rentalInvestmentAmount = 0;
 
     if (enableRentalComparison) {
-      rentalPayment = mortgagePayment * (1 - rentalDiscountPercent / 100);
+      rentalPayment = mortgagePayment * (1 - safeRentalDiscountPercent / 100);
       mortgageRentSavings = mortgagePayment - rentalPayment;
       rentalInvestmentAmount = leftover + mortgageRentSavings;
     }
@@ -99,22 +120,22 @@ export default function MortgageCalculator() {
 
     if (enableRentalComparison) {
       // Calculate what you would have paid in rent over the mortgage term
-      const rentalCost = mortgagePayment * (1 - rentalDiscountPercent / 100);
+      const rentalCost = mortgagePayment * (1 - safeRentalDiscountPercent / 100);
       const totalRentPaid = rentalCost * totalMonths;
       const rentInflationAdjustment = Math.pow(1 + inflationMonthlyRate, totalMonths);
       const realTotalRentPaid = totalRentPaid / rentInflationAdjustment;
-
+      
       // Calculate home value at end of mortgage term
-      finalHomeValue = homeValue * Math.pow(1 + homeAppreciationRate / 100 / 12, totalMonths);
+      finalHomeValue = homeValue * Math.pow(1 + safeHomeAppreciationRate / 100 / 12, totalMonths);
       finalHomeValueReal = finalHomeValue / rentInflationAdjustment;
-
+      
       // Net rent cost is the difference between what you paid in mortgage vs rent
       netRentCost = (mortgagePayment * totalMonths) - totalRentPaid;
       netRentCostReal = netRentCost / rentInflationAdjustment;
     }
 
     // Traditional Method (Scheduled Payments Only)
-    let tradBalance = mortgageBalance;
+    let tradBalance = safeMortgageBalance;
     let tradTotalInterest = 0;
     let tradTotalTaxSavings = 0;
     let tradTotalPayments = 0;
@@ -126,10 +147,10 @@ export default function MortgageCalculator() {
     while (tradBalance > 0 && tradMonths < totalMonths * 2) {
       const interest = tradBalance * mortgageMonthlyRate;
       const principal = Math.min(mortgagePayment - interest, tradBalance);
-      const taxSavings = (interest * taxRate) / 100;
+      const taxSavings = (interest * safeTaxRate) / 100;
 
       // Calculate maintenance costs
-      const monthlyMaintenance = tradCurrentHomeValue * (maintenanceRate / 100 / 12);
+      const monthlyMaintenance = tradCurrentHomeValue * (safeMaintenanceRate / 100 / 12);
       tradTotalMaintenance += monthlyMaintenance;
 
       tradTotalInterest += interest;
@@ -138,7 +159,7 @@ export default function MortgageCalculator() {
       tradBalance -= principal;
 
       // Home appreciation
-      tradCurrentHomeValue *= (1 + homeAppreciationRate / 100 / 12);
+      tradCurrentHomeValue *= (1 + safeHomeAppreciationRate / 100 / 12);
 
       tradMonths++;
 
@@ -172,7 +193,7 @@ export default function MortgageCalculator() {
 
     while (extraBalance > 0 && extraMonths < totalMonths * 2) {
       const interest = extraBalance * mortgageMonthlyRate;
-      const taxSavings = (interest * taxRate) / 100;
+      const taxSavings = (interest * safeTaxRate) / 100;
 
       // Calculate maintenance costs
       const monthlyMaintenance = extraCurrentHomeValue * (maintenanceRate / 100 / 12);
@@ -296,7 +317,7 @@ export default function MortgageCalculator() {
     while (invBalance > 0 && invMonths < totalMonths * 2) {
       const interest = invBalance * mortgageMonthlyRate;
       const principal = Math.min(mortgagePayment - interest, invBalance);
-      const taxSavings = (interest * taxRate) / 100;
+      const taxSavings = (interest * safeTaxRate) / 100;
 
       // Calculate maintenance costs
       const monthlyMaintenance = invCurrentHomeValue * (maintenanceRate / 100 / 12);
