@@ -342,8 +342,9 @@ export default function MortgageCalculator() {
         // Pay rent
         rentalTotalRent += rentalCost;
 
-        // Invest the difference between mortgage payment and rent
-        const investmentAmount = mortgagePayment - rentalCost;
+        // Invest the difference between mortgage payment and rent PLUS leftover money
+        // When renting, you have leftover money available for investment
+        const investmentAmount = (mortgagePayment - rentalCost) + leftover;
         rentalInvestmentBalance = rentalInvestmentBalance * (1 + investmentMonthlyRate) + investmentAmount;
         rentalTotalInvestment += investmentAmount;
 
@@ -363,7 +364,7 @@ export default function MortgageCalculator() {
       // Net position: investment gains + home appreciation - rent paid
       // Note: We don't subtract maintenance because renter doesn't pay maintenance
       const rentalNetPosition = rentalInvestmentBalance + currentHomeValue - rentalTotalRent;
-      
+
       // For comparison purposes, we want just investment gain minus rent cost (no home appreciation)
       const rentalComparisonValue = rentalInvestmentBalance - rentalTotalRent;
 
