@@ -211,7 +211,7 @@ export default function MortgageCalculator() {
 
 
     // Line of Credit Accelerated Method
-    let accBalance = mortgageBalance;
+    let accBalance = safeMortgageBalance;
     let locBalance = 0;
     let accTotalInterest = 0;
     let accTotalLocInterest = 0;
@@ -219,53 +219,52 @@ export default function MortgageCalculator() {
     let accTotalPayments = 0;
     let accTotalMaintenance = 0;
     let accMonths = 0;
-    let lastChunkMonth = 0;
     let accCurrentHomeValue = homeValue;
 
     const accData = [];
 
-    while ((accBalance > 0 || locBalance > 0) && accMonths < totalMonths * 2) {
-      // Check if we can use LOC chunk strategy
-      if (locBalance === 0 && accBalance > 0 && (accMonths - lastChunkMonth) >= 1) {
-        const chunkSize = Math.min(locLimit, accBalance);
-        locBalance = chunkSize;
-        accBalance -= chunkSize;
-        lastChunkMonth = accMonths;
-      }
+    while (accBalance > 0 && accMonths < totalMonths * 2) {
+      // Calculate mortgage interest and payment
+      const mortgageInterest = accBalance * mortgageMonthlyRate;
+      const taxSavings = (mortgageInterest * safeTaxRate) / 100;
+      accTotalInterest += mortgageInterest;
+      accTotalTaxSavings += taxSavings;
 
       // Calculate maintenance costs
-      const monthlyMaintenance = accCurrentHomeValue * (maintenanceRate / 100 / 12);
+      const monthlyMaintenance = accCurrentHomeValue * (safeMaintenanceRate / 100 / 12);
       accTotalMaintenance += monthlyMaintenance;
 
-      // Calculate mortgage interest
-      if (accBalance > 0) {
-        const mortgageInterest = accBalance * mortgageMonthlyRate;
-        const taxSavings = (mortgageInterest * taxRate) / 100;
-        accTotalInterest += mortgageInterest;
-        accTotalTaxSavings += taxSavings;
+      // Apply regular mortgage payment
+      const principalPayment = mortgagePayment - mortgageInterest;
+      accBalance -= principalPayment;
+      accTotalPayments += mortgagePayment;
+
+      // If we have leftover money, use it to pay down LOC
+      if (leftover > 0) {
+        // If no LOC balance, take a new LOC chunk
+        if (locBalance === 0 && accBalance > 0) {
+          const chunkSize = Math.min(safeLocLimit, accBalance);
+          locBalance = chunkSize;
+          accBalance -= chunkSize;
+        }
+
+        // Pay down LOC with leftover money
+        if (locBalance > 0) {
+          const locPayment = Math.min(leftover, locBalance);
+          locBalance -= locPayment;
+          accTotalPayments += locPayment;
+        }
       }
 
-      // Calculate LOC interest
+      // Calculate LOC interest on remaining balance (accrues monthly)
       if (locBalance > 0) {
         const locInterest = locBalance * locMonthlyRate;
         accTotalLocInterest += locInterest;
-        locBalance += locInterest;
-      }
-
-      // Apply leftover payment
-      if (locBalance > 0) {
-        const payment = Math.min(leftover, locBalance);
-        locBalance -= payment;
-        accTotalPayments += payment;
-      } else if (accBalance > 0) {
-        const interest = accBalance * mortgageMonthlyRate;
-        const principal = Math.min(leftover - interest, accBalance);
-        accBalance -= principal;
-        accTotalPayments += leftover;
+        locBalance += locInterest; // Interest gets added to LOC balance
       }
 
       // Home appreciation
-      accCurrentHomeValue *= (1 + homeAppreciationRate / 100 / 12);
+      accCurrentHomeValue *= (1 + safeHomeAppreciationRate / 100 / 12);
 
       accMonths++;
 
@@ -279,7 +278,7 @@ export default function MortgageCalculator() {
 
 
     // Investment Method (Pay mortgage normally, invest leftover)
-    let invBalance = mortgageBalance;
+    let invBalance = safeMortgageBalance;
     let invTotalInterest = 0;
     let invTotalTaxSavings = 0;
     let invTotalPayments = 0;
