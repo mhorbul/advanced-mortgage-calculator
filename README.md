@@ -2,6 +2,10 @@
 
 A comprehensive React application that compares different mortgage payoff strategies with inflation adjustment to help you make informed financial decisions.
 
+## 🎥 Inspiration
+
+This application was inspired by the mortgage payoff strategies discussed in [this YouTube video](https://www.youtube.com/watch?v=AqOplfWlYY8). The video explores various approaches to paying off mortgages faster, including using personal lines of credit and comparing different strategies. This calculator brings those concepts to life with interactive calculations and visual comparisons.
+
 ## 🏠 Features
 
 ### Four Mortgage Payoff Strategies
