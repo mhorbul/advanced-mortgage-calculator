@@ -828,7 +828,7 @@ export default function MortgageCalculator() {
                 )}
                 <div className="flex justify-between pt-2 border-t border-gray-200">
                   <span className="text-gray-700 font-medium">Net Cost:</span>
-                  <span className="font-bold text-blue-700">{formatCurrency(calculations.extraPayment.netInterest)}</span>
+                  <span className="font-bold text-red-700">{formatCurrency(calculations.extraPayment.netInterest)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
@@ -898,7 +898,7 @@ export default function MortgageCalculator() {
                 )}
                 <div className="flex justify-between pt-2 border-t border-gray-200">
                   <span className="text-gray-700 font-medium">Net Cost:</span>
-                  <span className="font-bold text-green-700">{formatCurrency(calculations.accelerated.netInterest)}</span>
+                  <span className="font-bold text-red-700">{formatCurrency(calculations.accelerated.netInterest)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
