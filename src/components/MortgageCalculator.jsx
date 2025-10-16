@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { trackPageView, trackInputChange, trackRentalToggle, trackStrategyComparison, trackChartInteraction } from '../utils/analytics';
 
 export default function MortgageCalculator() {
   const [inputs, setInputs] = useState({
@@ -18,6 +19,18 @@ export default function MortgageCalculator() {
     enableRentalComparison: false
   });
 
+  // Track page view on component mount
+  useEffect(() => {
+    trackPageView('/mortgage-calculator');
+  }, []);
+
+  // Track best strategy changes
+  useEffect(() => {
+    if (calculations && calculations.bestStrategy) {
+      trackStrategyComparison(calculations.bestStrategy.name);
+    }
+  }, [calculations?.bestStrategy?.name]);
+
   const handleInputChange = (field, value) => {
     // Handle empty string as empty string, not 0
     if (value === '') {
@@ -26,10 +39,18 @@ export default function MortgageCalculator() {
       const numValue = parseFloat(value);
       setInputs(prev => ({ ...prev, [field]: isNaN(numValue) ? 0 : numValue }));
     }
+    
+    // Track input changes
+    trackInputChange(field, value);
   };
 
   const handleCheckboxChange = (field, checked) => {
     setInputs(prev => ({ ...prev, [field]: checked }));
+    
+    // Track rental comparison toggle
+    if (field === 'enableRentalComparison') {
+      trackRentalToggle(checked);
+    }
   };
 
   const calculations = useMemo(() => {
@@ -1011,7 +1032,7 @@ export default function MortgageCalculator() {
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Mortgage Balance Over Time</h3>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={calculations.chartData}>
+              <LineChart data={calculations.chartData} onClick={() => trackChartInteraction('mortgage_balance_chart')}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="year" label={{ value: 'Year', position: 'insideBottom', offset: -5 }} />
                 <YAxis label={{ value: 'Balance ($)', angle: -90, position: 'insideLeft' }} />
@@ -1036,7 +1057,7 @@ export default function MortgageCalculator() {
                 { strategy: 'LOC Strategy', value: -calculations.accelerated.netInterest },
                 { strategy: 'Invest & Pay', value: calculations.investment.netPosition },
                 ...(calculations.rental ? [{ strategy: 'Rent & Invest', value: calculations.rental.comparisonValue }] : [])
-              ]}>
+              ]} onClick={() => trackChartInteraction('net_position_chart')}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="strategy" angle={-20} textAnchor="end" height={80} />
                 <YAxis label={{ value: 'Net Position/Cost ($)', angle: -90, position: 'insideLeft' }} />

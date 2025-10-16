@@ -21,6 +21,26 @@ This application was inspired by the mortgage payoff strategies discussed in [th
 - **Best Strategy Detection** - Automatically identifies the optimal approach
 - **Adjustable Parameters** - All inputs are customizable
 
+## 📊 Google Analytics Setup
+
+This application includes Google Analytics tracking to help understand user behavior and improve the tool. To enable analytics:
+
+1. **Get your Google Analytics Measurement ID**:
+   - Go to [Google Analytics](https://analytics.google.com/)
+   - Create a new property for your website
+   - Copy your Measurement ID (format: G-XXXXXXXXXX)
+
+2. **Update the configuration**:
+   - Replace `GA_MEASUREMENT_ID` in `public/index.html` with your actual Measurement ID
+   - Replace `GA_MEASUREMENT_ID` in `src/utils/analytics.js` with your actual Measurement ID
+
+3. **Tracked Events**:
+   - Page views
+   - Input field changes
+   - Rental comparison toggles
+   - Strategy selections
+   - Chart interactions
+
 ## 🚀 Quick Start
 
 ### Prerequisites
