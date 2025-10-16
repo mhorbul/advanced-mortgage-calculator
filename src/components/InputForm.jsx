@@ -40,7 +40,7 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-700 mb-6">Mortgage Calculator Inputs</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="space-y-6">
         {/* Mortgage Details */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-gray-600">Mortgage Details</h3>
