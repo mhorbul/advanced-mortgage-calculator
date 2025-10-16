@@ -127,6 +127,13 @@ export default function StrategyCard({
           <span className="font-semibold text-green-600">{formatCurrency(strategy.totalTaxSavings)}</span>
         </div>
 
+        {strategy.investmentGain !== undefined && (
+          <div className="flex justify-between">
+            <span className="text-gray-600">Investment Gains:</span>
+            <span className="font-semibold text-green-600">{formatCurrency(strategy.investmentGain)}</span>
+          </div>
+        )}
+
         {enableRentalComparison && (
           <div className="flex justify-between">
             <span className="text-gray-600">Total Maintenance:</span>
