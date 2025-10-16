@@ -142,8 +142,12 @@ export default function StrategyCard({
         )}
 
         <div className="flex justify-between pt-2 border-t border-gray-200">
-          <span className="text-gray-700 font-medium">Net Cost:</span>
-          <span className="font-bold text-red-700">{formatCurrency(strategy.netCost)}</span>
+          <span className="text-gray-700 font-medium">
+            {strategy.netCost < 0 ? 'Net Profit:' : 'Net Cost:'}
+          </span>
+          <span className={`font-bold ${strategy.netCost < 0 ? 'text-green-700' : 'text-red-700'}`}>
+            {formatCurrency(Math.abs(strategy.netCost))}
+          </span>
         </div>
 
         {renderRentalSection()}
