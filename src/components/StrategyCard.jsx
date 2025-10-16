@@ -100,7 +100,9 @@ export default function StrategyCard({
       <div className="space-y-3">
         <div className="flex justify-between">
           <span className="text-gray-600">Monthly Payment:</span>
-          <span className={`font-semibold ${colors.accent}`}>{formatCurrency(mortgagePayment)}</span>
+          <span className={`font-semibold ${colors.accent}`}>
+            {formatCurrency(title === 'Extra Principal Method' && strategy.effectiveMonthlyPayment ? strategy.effectiveMonthlyPayment : mortgagePayment)}
+          </span>
         </div>
 
         <div className="flex justify-between">

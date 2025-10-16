@@ -1,5 +1,6 @@
 import React from 'react';
 import { trackInputChange, trackRentalToggle } from '../utils/analytics';
+import { formatCurrency } from '../utils/mortgageCalculations';
 
 export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
   const handleInputChange = (field, value) => {
@@ -249,6 +250,16 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
             </div>
           </div>
         )}
+
+        {/* Monthly Leftover Display */}
+        <div className="pt-4 border-t border-gray-200">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-700 font-medium">Monthly Leftover (after all costs):</span>
+            <span className="text-lg font-bold text-green-600">
+              {formatCurrency(safeIncome - totalCosts)}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

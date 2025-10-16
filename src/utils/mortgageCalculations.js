@@ -156,7 +156,8 @@ export const calculateMortgageStrategies = (inputs) => {
     netInterest: extraTotalInterest - extraTotalTaxSavings,
     finalHomeValue: extraCurrentHomeValue,
     months: extraMonths,
-    netPosition: extraCurrentHomeValue - safeMortgageBalance - extraTotalInterest + extraTotalTaxSavings - extraTotalMaintenance
+    netPosition: extraCurrentHomeValue - safeMortgageBalance - extraTotalInterest + extraTotalTaxSavings - extraTotalMaintenance,
+    effectiveMonthlyPayment: mortgagePayment + leftover // Base payment + extra principal
   };
 
   // Line of Credit Accelerated Method
