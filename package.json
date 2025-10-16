@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Mortgage payoff strategy comparison tool with inflation adjustment",
   "main": "index.js",
+  "homepage": "https://mhorbul.github.io/advanced-mortgage-calculator",
   "scripts": {
     "start": "PUBLIC_URL= react-scripts start",
     "build": "react-scripts build",
