@@ -2,24 +2,24 @@
 export const calculateMortgagePayment = (balance, rate, years) => {
   const monthlyRate = rate / 100 / 12;
   const totalMonths = years * 12;
-  
+
   if (monthlyRate === 0) {
     return balance / totalMonths;
   }
-  
-  return balance * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / 
+
+  return balance * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) /
          (Math.pow(1 + monthlyRate, totalMonths) - 1);
 };
 
 export const calculateInvestmentBalance = (monthlyContribution, months, annualRate) => {
   const monthlyRate = annualRate / 100 / 12;
   let balance = 0;
-  
+
   for (let i = 0; i < months; i++) {
     balance += monthlyContribution;
     balance *= (1 + monthlyRate);
   }
-  
+
   return balance;
 };
 
@@ -322,12 +322,12 @@ export const calculateMortgageStrategies = (inputs) => {
   // Chart data
   const chartData = [];
   const maxYears = Math.max(tradMonths, extraMonths, accMonths) / 12;
-  
+
   for (let year = 0; year <= maxYears; year++) {
     const tradEntry = tradData.find(d => d.year === year);
     const extraEntry = extraData.find(d => d.year === year);
     const accEntry = accData.find(d => d.year === year);
-    
+
     chartData.push({
       year,
       traditional: tradEntry ? tradEntry.traditional : 0,
@@ -344,7 +344,7 @@ export const calculateMortgageStrategies = (inputs) => {
     { name: 'Invest & Pay', netWorth: investment.netPosition }
   ];
 
-  const bestStrategy = strategies.reduce((best, current) => 
+  const bestStrategy = strategies.reduce((best, current) =>
     current.netWorth > best.netWorth ? current : best
   );
 

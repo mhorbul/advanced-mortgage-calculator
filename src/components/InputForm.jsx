@@ -3,13 +3,7 @@ import { trackInputChange, trackRentalToggle } from '../utils/analytics';
 
 export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
   const handleInputChange = (field, value) => {
-    // Handle empty string as empty string, not 0
-    if (value === '') {
-      onInputChange(field, '');
-    } else {
-      const numValue = parseFloat(value);
-      onInputChange(field, isNaN(numValue) ? 0 : numValue);
-    }
+    onInputChange(field, value);
     
     // Track input changes
     trackInputChange(field, value);
@@ -17,7 +11,7 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
 
   const handleCheckboxChange = (field, checked) => {
     onCheckboxChange(field, checked);
-    
+
     // Track rental comparison toggle
     if (field === 'enableRentalComparison') {
       trackRentalToggle(checked);
@@ -25,11 +19,11 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
   };
 
   // Calculate validation warning
-  const mortgagePayment = inputs.mortgageBalance && inputs.mortgageRate && inputs.mortgageYears 
-    ? (inputs.mortgageBalance * (inputs.mortgageRate / 100 / 12) * Math.pow(1 + inputs.mortgageRate / 100 / 12, inputs.mortgageYears * 12)) / 
+  const mortgagePayment = inputs.mortgageBalance && inputs.mortgageRate && inputs.mortgageYears
+    ? (inputs.mortgageBalance * (inputs.mortgageRate / 100 / 12) * Math.pow(1 + inputs.mortgageRate / 100 / 12, inputs.mortgageYears * 12)) /
       (Math.pow(1 + inputs.mortgageRate / 100 / 12, inputs.mortgageYears * 12) - 1)
     : 0;
-  
+
   const homeValue = inputs.mortgageBalance ? inputs.mortgageBalance / 0.8 : 0;
   const monthlyMaintenance = homeValue * (inputs.maintenanceRate / 100 / 12);
   const totalCosts = (inputs.monthlyExpenses || 0) + mortgagePayment + monthlyMaintenance;
@@ -38,12 +32,12 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-700 mb-6">Mortgage Calculator Inputs</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Mortgage Details */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-gray-600">Mortgage Details</h3>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Mortgage Balance ($)
@@ -88,7 +82,7 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
         {/* Financial Details */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-gray-600">Financial Details</h3>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Monthly Income ($)
@@ -119,7 +113,7 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
             />
             {costExceedsIncome && (
               <p className="text-red-600 text-xs mt-1">
-                ⚠️ Total costs exceed income! Expenses + Mortgage + Maintenance = ${totalCosts.toLocaleString()} > ${(inputs.monthlyIncome || 0).toLocaleString()}
+                ⚠️ Total costs exceed income! Expenses + Mortgage + Maintenance = ${totalCosts.toLocaleString()} &gt; ${(inputs.monthlyIncome || 0).toLocaleString()}
               </p>
             )}
           </div>
@@ -141,7 +135,7 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
         {/* Strategy Options */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-gray-600">Strategy Options</h3>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               LOC Limit ($)
@@ -216,7 +210,7 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
             Enable Rental Comparison
           </label>
         </div>
-        
+
         {inputs.enableRentalComparison && (
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -232,7 +226,7 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
                 placeholder="3.5"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Rental Discount (%)

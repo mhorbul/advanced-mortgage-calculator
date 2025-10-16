@@ -29,7 +29,13 @@ export default function MortgageCalculator() {
   }, []);
 
   const handleInputChange = (field, value) => {
-    setInputs(prev => ({ ...prev, [field]: value }));
+    // Handle empty string as empty string, not 0
+    if (value === '') {
+      setInputs(prev => ({ ...prev, [field]: '' }));
+    } else {
+      const numValue = parseFloat(value);
+      setInputs(prev => ({ ...prev, [field]: isNaN(numValue) ? 0 : numValue }));
+    }
   };
 
   const handleCheckboxChange = (field, checked) => {
@@ -60,7 +66,7 @@ export default function MortgageCalculator() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Input Form */}
           <div className="lg:col-span-1">
-            <InputForm 
+            <InputForm
               inputs={inputs}
               onInputChange={handleInputChange}
               onCheckboxChange={handleCheckboxChange}

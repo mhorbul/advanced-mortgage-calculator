@@ -1,12 +1,12 @@
 import React from 'react';
 import { formatCurrency } from '../utils/mortgageCalculations';
 
-export default function StrategyCard({ 
-  title, 
-  strategy, 
-  enableRentalComparison, 
+export default function StrategyCard({
+  title,
+  strategy,
+  enableRentalComparison,
   rentalData,
-  mortgagePayment 
+  mortgagePayment
 }) {
   if (!strategy) return null;
 
@@ -58,47 +58,47 @@ export default function StrategyCard({
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h3 className="text-lg font-semibold text-gray-700 mb-4">{title}</h3>
-      
+
       <div className="space-y-3">
         <div className="flex justify-between">
           <span className="text-gray-600">Monthly Payment:</span>
           <span className="font-semibold text-red-600">{formatCurrency(mortgagePayment)}</span>
         </div>
-        
+
         <div className="flex justify-between">
           <span className="text-gray-600">Payoff Time:</span>
           <span className="font-semibold">{formatMonths(strategy.months)}</span>
         </div>
-        
+
         <div className="flex justify-between">
           <span className="text-gray-600">Mortgage Interest:</span>
           <span className="font-semibold text-red-600">{formatCurrency(strategy.totalInterest)}</span>
         </div>
-        
+
         {strategy.totalLocInterest !== undefined && (
           <div className="flex justify-between">
             <span className="text-gray-600">LOC Interest:</span>
             <span className="font-semibold text-red-600">{formatCurrency(strategy.totalLocInterest)}</span>
           </div>
         )}
-        
+
         <div className="flex justify-between">
           <span className="text-gray-600">Tax Savings:</span>
           <span className="font-semibold text-green-600">{formatCurrency(strategy.totalTaxSavings)}</span>
         </div>
-        
+
         {enableRentalComparison && (
           <div className="flex justify-between">
             <span className="text-gray-600">Total Maintenance:</span>
             <span className="font-semibold text-red-600">{formatCurrency(strategy.totalMaintenance)}</span>
           </div>
         )}
-        
+
         <div className="flex justify-between pt-2 border-t border-gray-200">
           <span className="text-gray-700 font-medium">Net Cost:</span>
           <span className="font-bold text-red-700">{formatCurrency(strategy.netInterest)}</span>
         </div>
-        
+
         {renderRentalSection()}
       </div>
     </div>
