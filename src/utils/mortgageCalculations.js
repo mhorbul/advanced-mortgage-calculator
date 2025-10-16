@@ -374,12 +374,12 @@ export const calculateMortgageStrategies = (inputs) => {
     });
   }
 
-  // Best strategy
+  // Best strategy (using netCost for true financial comparison)
   const strategies = [
-    { name: 'Traditional', netWorth: traditional.netPosition },
-    { name: 'Extra Principal', netWorth: extraPayment.netPosition },
-    { name: 'LOC Strategy', netWorth: accelerated.netPosition },
-    { name: 'Invest & Pay', netWorth: investment.netPosition }
+    { name: 'Traditional', netWorth: -traditional.netCost }, // Negative because lower cost is better
+    { name: 'Extra Principal', netWorth: -extraPayment.netCost },
+    { name: 'LOC Strategy', netWorth: -accelerated.netCost },
+    { name: 'Invest & Pay', netWorth: -investment.netCost }
   ];
 
   const bestStrategy = strategies.reduce((best, current) =>
