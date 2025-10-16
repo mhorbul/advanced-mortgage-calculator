@@ -39,14 +39,14 @@ export default function MortgageCalculator() {
       const numValue = parseFloat(value);
       setInputs(prev => ({ ...prev, [field]: isNaN(numValue) ? 0 : numValue }));
     }
-    
+
     // Track input changes
     trackInputChange(field, value);
   };
 
   const handleCheckboxChange = (field, checked) => {
     setInputs(prev => ({ ...prev, [field]: checked }));
-    
+
     // Track rental comparison toggle
     if (field === 'enableRentalComparison') {
       trackRentalToggle(checked);

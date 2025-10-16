@@ -1,7 +1,7 @@
 // Google Analytics utility functions
 // Replace 'GA_MEASUREMENT_ID' with your actual Google Analytics Measurement ID
 
-export const GA_MEASUREMENT_ID = 'GA_MEASUREMENT_ID';
+export const GA_MEASUREMENT_ID = 'G-H9VWYRXQSS';
 
 // Track page views
 export const trackPageView = (url) => {
