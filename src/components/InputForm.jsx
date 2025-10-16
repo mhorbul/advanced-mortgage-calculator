@@ -22,9 +22,9 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
   const safeBalance = typeof inputs.mortgageBalance === 'number' ? inputs.mortgageBalance : parseFloat(inputs.mortgageBalance) || 0;
   const safeRate = typeof inputs.mortgageRate === 'number' ? inputs.mortgageRate : parseFloat(inputs.mortgageRate) || 0;
   const safeYears = typeof inputs.mortgageYears === 'number' ? inputs.mortgageYears : parseFloat(inputs.mortgageYears) || 0;
-  
-  const mortgagePayment = safeBalance && safeRate && safeYears 
-    ? (safeBalance * (safeRate / 100 / 12) * Math.pow(1 + safeRate / 100 / 12, safeYears * 12)) / 
+
+  const mortgagePayment = safeBalance && safeRate && safeYears
+    ? (safeBalance * (safeRate / 100 / 12) * Math.pow(1 + safeRate / 100 / 12, safeYears * 12)) /
       (Math.pow(1 + safeRate / 100 / 12, safeYears * 12) - 1)
     : 0;
 

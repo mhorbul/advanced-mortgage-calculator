@@ -186,10 +186,15 @@ export const calculateMortgageStrategies = (inputs) => {
     // Apply regular mortgage payment
     const principalPayment = mortgagePayment - mortgageInterest;
     accBalance -= principalPayment;
+    
+    // Ensure mortgage balance doesn't go negative
+    if (accBalance < 0) {
+      accBalance = 0;
+    }
 
-    // If we have leftover money, use it to pay down LOC
+    // If we have leftover money, use it strategically
     if (leftover > 0) {
-      // If no LOC balance, take a new LOC chunk
+      // If no LOC balance and still have mortgage balance, take a LOC chunk
       if (locBalance === 0 && accBalance > 0) {
         const chunkSize = Math.min(safeLocLimit, accBalance);
         locBalance = chunkSize;
@@ -200,6 +205,11 @@ export const calculateMortgageStrategies = (inputs) => {
       if (locBalance > 0) {
         const locPayment = Math.min(leftover, locBalance);
         locBalance -= locPayment;
+        
+        // Ensure LOC balance doesn't go negative
+        if (locBalance < 0) {
+          locBalance = 0;
+        }
       }
     }
 
