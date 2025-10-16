@@ -750,7 +750,7 @@ export default function MortgageCalculator() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax Savings:</span>
-                  <span className="font-semibold text-green-600">-{formatCurrency(calculations.traditional.totalTaxSavings)}</span>
+                  <span className="font-semibold text-green-600">{formatCurrency(calculations.traditional.totalTaxSavings)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
@@ -816,7 +816,7 @@ export default function MortgageCalculator() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax Savings:</span>
-                  <span className="font-semibold text-green-600">-{formatCurrency(calculations.extraPayment.totalTaxSavings)}</span>
+                  <span className="font-semibold text-green-600">{formatCurrency(calculations.extraPayment.totalTaxSavings)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
@@ -886,7 +886,7 @@ export default function MortgageCalculator() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax Savings:</span>
-                  <span className="font-semibold text-green-600">-{formatCurrency(calculations.accelerated.totalTaxSavings)}</span>
+                  <span className="font-semibold text-green-600">{formatCurrency(calculations.accelerated.totalTaxSavings)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
@@ -952,7 +952,7 @@ export default function MortgageCalculator() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax Savings:</span>
-                  <span className="font-semibold text-green-600">-{formatCurrency(calculations.investment.totalTaxSavings)}</span>
+                  <span className="font-semibold text-green-600">{formatCurrency(calculations.investment.totalTaxSavings)}</span>
                 </div>
                 {inputs.enableRentalComparison && (
                   <>
