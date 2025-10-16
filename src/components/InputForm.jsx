@@ -4,7 +4,7 @@ import { trackInputChange, trackRentalToggle } from '../utils/analytics';
 export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
   const handleInputChange = (field, value) => {
     onInputChange(field, value);
-    
+
     // Track input changes
     trackInputChange(field, value);
   };
