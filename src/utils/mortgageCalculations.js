@@ -105,6 +105,7 @@ export const calculateMortgageStrategies = (inputs) => {
     totalTaxSavings: tradTotalTaxSavings,
     totalMaintenance: tradTotalMaintenance,
     netInterest: tradTotalInterest - tradTotalTaxSavings,
+    netCost: tradTotalInterest - tradTotalTaxSavings, // No LOC interest or investment gains
     finalHomeValue: tradCurrentHomeValue,
     months: tradMonths,
     netPosition: tradCurrentHomeValue - safeMortgageBalance - tradTotalInterest + tradTotalTaxSavings - tradTotalMaintenance
@@ -154,6 +155,7 @@ export const calculateMortgageStrategies = (inputs) => {
     totalTaxSavings: extraTotalTaxSavings,
     totalMaintenance: extraTotalMaintenance,
     netInterest: extraTotalInterest - extraTotalTaxSavings,
+    netCost: extraTotalInterest - extraTotalTaxSavings, // No LOC interest or investment gains
     finalHomeValue: extraCurrentHomeValue,
     months: extraMonths,
     netPosition: extraCurrentHomeValue - safeMortgageBalance - extraTotalInterest + extraTotalTaxSavings - extraTotalMaintenance,
@@ -253,6 +255,7 @@ export const calculateMortgageStrategies = (inputs) => {
     totalTaxSavings: accTotalTaxSavings,
     totalMaintenance: accTotalMaintenance,
     netInterest: accTotalInterest + accTotalLocInterest - accTotalTaxSavings,
+    netCost: accTotalInterest + accTotalLocInterest - accTotalTaxSavings, // Mortgage + LOC interest - tax savings
     finalHomeValue: accCurrentHomeValue,
     months: accMonths,
     netPosition: accCurrentHomeValue - safeMortgageBalance - accTotalInterest - accTotalLocInterest + accTotalTaxSavings - accTotalMaintenance,
@@ -275,6 +278,7 @@ export const calculateMortgageStrategies = (inputs) => {
     totalTaxSavings: invTotalTaxSavings,
     totalMaintenance: invTotalMaintenance,
     netInterest: invTotalInterest - invTotalTaxSavings,
+    netCost: invTotalInterest - invTotalTaxSavings - investmentGain, // Mortgage interest - tax savings - investment gains
     finalHomeValue: invFinalHomeValue,
     months: invMonths,
     investmentBalance,
