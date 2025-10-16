@@ -15,7 +15,10 @@ export default function ChartsSection({ calculations }) {
           <LineChart data={calculations.chartData} onClick={() => trackChartInteraction('mortgage_balance_chart')}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" label={{ value: 'Year', position: 'insideBottom', offset: -5 }} />
-            <YAxis label={{ value: 'Balance ($)', angle: -90, position: 'insideLeft' }} />
+            <YAxis
+              label={{ value: 'Balance ($)', angle: -90, position: 'insideLeft' }}
+              domain={[0, calculations.mortgageBalance]}
+            />
             <Tooltip formatter={(value) => formatCurrency(value)} />
             <Legend />
             <Line type="monotone" dataKey="traditional" stroke="#ef4444" strokeWidth={2} name="Traditional" />
