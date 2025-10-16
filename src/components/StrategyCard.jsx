@@ -1,6 +1,5 @@
 import React from 'react';
 import { formatCurrency } from '../utils/mortgageCalculations';
-import DebugPanel from './DebugPanel';
 
 export default function StrategyCard({
   title,
@@ -102,11 +101,6 @@ export default function StrategyCard({
 
         {renderRentalSection()}
       </div>
-
-      {/* Debug Panel for LOC Strategy */}
-      {title === 'LOC Strategy' && strategy.debugData && (
-        <DebugPanel debugData={strategy.debugData} />
-      )}
     </div>
   );
 }
