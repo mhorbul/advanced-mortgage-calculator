@@ -742,7 +742,7 @@ export default function MortgageCalculator() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Monthly Payment:</span>
-                  <span className="font-semibold">{formatCurrency(calculations.traditional.monthlyPayment)}</span>
+                  <span className="font-semibold text-red-600">{formatCurrency(calculations.traditional.monthlyPayment)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Interest:</span>
@@ -789,7 +789,7 @@ export default function MortgageCalculator() {
                         </div>
                         <div className="flex justify-between pt-1 border-t border-gray-100">
                           <span className="text-gray-700 font-medium">Total:</span>
-                          <span className="font-bold text-gray-800">{formatCurrency(calculations.traditional.rental.total)}</span>
+                          <span className={`font-bold ${calculations.traditional.rental.total >= 0 ? 'text-green-700' : 'text-red-700'}`}>{formatCurrency(calculations.traditional.rental.total)}</span>
                         </div>
                       </div>
                     </div>
@@ -808,7 +808,7 @@ export default function MortgageCalculator() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Monthly Payment:</span>
-                  <span className="font-semibold">{formatCurrency(calculations.extraPayment.monthlyPayment)}</span>
+                  <span className="font-semibold text-red-600">{formatCurrency(calculations.extraPayment.monthlyPayment)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Interest:</span>
@@ -855,7 +855,7 @@ export default function MortgageCalculator() {
                         </div>
                         <div className="flex justify-between pt-1 border-t border-gray-100">
                           <span className="text-gray-700 font-medium">Total:</span>
-                          <span className="font-bold text-gray-800">{formatCurrency(calculations.extraPayment.rental.total)}</span>
+                          <span className={`font-bold ${calculations.extraPayment.rental.total >= 0 ? 'text-green-700' : 'text-red-700'}`}>{formatCurrency(calculations.extraPayment.rental.total)}</span>
                         </div>
                       </div>
                     </div>
@@ -874,11 +874,11 @@ export default function MortgageCalculator() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 text-xs">Mortgage Interest:</span>
-                  <span className="font-semibold text-xs">{formatCurrency(calculations.accelerated.mortgageInterest)}</span>
+                  <span className="font-semibold text-xs text-red-600">{formatCurrency(calculations.accelerated.mortgageInterest)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 text-xs">LOC Interest:</span>
-                  <span className="font-semibold text-xs">{formatCurrency(calculations.accelerated.locInterest)}</span>
+                  <span className="font-semibold text-xs text-red-600">{formatCurrency(calculations.accelerated.locInterest)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Interest:</span>
@@ -925,7 +925,7 @@ export default function MortgageCalculator() {
                         </div>
                         <div className="flex justify-between pt-1 border-t border-gray-100">
                           <span className="text-gray-700 font-medium">Total:</span>
-                          <span className="font-bold text-gray-800">{formatCurrency(calculations.accelerated.rental.total)}</span>
+                          <span className={`font-bold ${calculations.accelerated.rental.total >= 0 ? 'text-green-700' : 'text-red-700'}`}>{formatCurrency(calculations.accelerated.rental.total)}</span>
                         </div>
                       </div>
                     </div>
@@ -944,7 +944,7 @@ export default function MortgageCalculator() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Monthly Payment:</span>
-                  <span className="font-semibold">{formatCurrency(calculations.investment.monthlyPayment)}</span>
+                  <span className="font-semibold text-red-600">{formatCurrency(calculations.investment.monthlyPayment)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Interest Paid:</span>
@@ -997,7 +997,7 @@ export default function MortgageCalculator() {
                         </div>
                         <div className="flex justify-between pt-1 border-t border-gray-100">
                           <span className="text-gray-700 font-medium">Total:</span>
-                          <span className="font-bold text-gray-800">{formatCurrency(calculations.investment.rental.total)}</span>
+                          <span className={`font-bold ${calculations.investment.rental.total >= 0 ? 'text-green-700' : 'text-red-700'}`}>{formatCurrency(calculations.investment.rental.total)}</span>
                         </div>
                       </div>
                     </div>
