@@ -220,7 +220,7 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
         </div>
 
         {inputs.enableRentalComparison && (
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="mt-4 space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Home Appreciation Rate (% per year)
