@@ -348,7 +348,15 @@ export const calculateMortgageStrategies = (inputs) => {
   const chartData = [];
   const maxYears = Math.max(tradMonths, extraMonths, accMonths) / 12;
 
-  for (let year = 0; year <= maxYears; year++) {
+  // Start with initial mortgage balance at year 0
+  chartData.push({
+    year: 0,
+    traditional: safeMortgageBalance,
+    extraPayment: safeMortgageBalance,
+    accelerated: safeMortgageBalance
+  });
+
+  for (let year = 1; year <= maxYears; year++) {
     const tradEntry = tradData.find(d => d.year === year);
     const extraEntry = extraData.find(d => d.year === year);
     const accEntry = accData.find(d => d.year === year);
