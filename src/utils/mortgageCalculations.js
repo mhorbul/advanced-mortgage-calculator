@@ -60,11 +60,11 @@ export const calculateMortgageStrategies = (inputs) => {
   const locMonthlyRate = safeLocRate / 100 / 12;
   const homeValue = safeMortgageBalance / 0.8; // Assuming 80% LTV
 
-  // Calculate leftover money (income - expenses, excluding mortgage and maintenance)
-  const leftover = safeMonthlyIncome - safeMonthlyExpenses;
+  // Calculate leftover money (income - expenses - mortgage payment - maintenance)
+  const monthlyMaintenance = homeValue * (safeMaintenanceRate / 100 / 12);
+  const leftover = safeMonthlyIncome - safeMonthlyExpenses - mortgagePayment - monthlyMaintenance;
 
   // Check if expenses + mortgage + maintenance exceed income
-  const monthlyMaintenance = homeValue * (safeMaintenanceRate / 100 / 12);
   const costExceedsIncome = (safeMonthlyExpenses + mortgagePayment + monthlyMaintenance) > safeMonthlyIncome;
 
   // Traditional Method
@@ -186,7 +186,7 @@ export const calculateMortgageStrategies = (inputs) => {
     // Apply regular mortgage payment
     const principalPayment = mortgagePayment - mortgageInterest;
     accBalance -= principalPayment;
-    
+
     // Ensure mortgage balance doesn't go negative
     if (accBalance < 0) {
       accBalance = 0;
@@ -205,7 +205,7 @@ export const calculateMortgageStrategies = (inputs) => {
       if (locBalance > 0) {
         const locPayment = Math.min(leftover, locBalance);
         locBalance -= locPayment;
-        
+
         // Ensure LOC balance doesn't go negative
         if (locBalance < 0) {
           locBalance = 0;
