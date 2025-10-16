@@ -10,6 +10,44 @@ export default function StrategyCard({
 }) {
   if (!strategy) return null;
 
+  // Define colors for each strategy
+  const getStrategyColors = (strategyTitle) => {
+    switch (strategyTitle) {
+      case 'Traditional Method':
+        return {
+          border: 'border-red-500',
+          accent: 'text-red-600',
+          bg: 'bg-red-50'
+        };
+      case 'Extra Principal Method':
+        return {
+          border: 'border-blue-500',
+          accent: 'text-blue-600',
+          bg: 'bg-blue-50'
+        };
+      case 'LOC Strategy':
+        return {
+          border: 'border-green-500',
+          accent: 'text-green-600',
+          bg: 'bg-green-50'
+        };
+      case 'Investment Strategy':
+        return {
+          border: 'border-purple-500',
+          accent: 'text-purple-600',
+          bg: 'bg-purple-50'
+        };
+      default:
+        return {
+          border: 'border-gray-500',
+          accent: 'text-gray-600',
+          bg: 'bg-gray-50'
+        };
+    }
+  };
+
+  const colors = getStrategyColors(title);
+
   const formatMonths = (months) => {
     const years = Math.floor(months / 12);
     const remainingMonths = Math.round(months % 12);
@@ -56,18 +94,18 @@ export default function StrategyCard({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-semibold text-gray-700 mb-4">{title}</h3>
+    <div className={`bg-white rounded-lg shadow-md p-6 border-2 ${colors.border}`}>
+      <h3 className={`text-lg font-semibold mb-4 ${colors.accent}`}>{title}</h3>
 
       <div className="space-y-3">
         <div className="flex justify-between">
           <span className="text-gray-600">Monthly Payment:</span>
-          <span className="font-semibold text-red-600">{formatCurrency(mortgagePayment)}</span>
+          <span className={`font-semibold ${colors.accent}`}>{formatCurrency(mortgagePayment)}</span>
         </div>
 
         <div className="flex justify-between">
           <span className="text-gray-600">Payoff Time:</span>
-          <span className="font-semibold">{formatMonths(strategy.months)}</span>
+          <span className={`font-semibold ${colors.accent}`}>{formatMonths(strategy.months)}</span>
         </div>
 
         <div className="flex justify-between">
