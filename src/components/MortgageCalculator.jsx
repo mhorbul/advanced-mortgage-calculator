@@ -24,13 +24,6 @@ export default function MortgageCalculator() {
     trackPageView('/mortgage-calculator');
   }, []);
 
-  // Track best strategy changes
-  useEffect(() => {
-    if (calculations && calculations.bestStrategy) {
-      trackStrategyComparison(calculations.bestStrategy.name);
-    }
-  }, [calculations?.bestStrategy?.name]);
-
   const handleInputChange = (field, value) => {
     // Handle empty string as empty string, not 0
     if (value === '') {
@@ -508,6 +501,13 @@ export default function MortgageCalculator() {
       costExceedsIncome
     };
   }, [inputs]);
+
+  // Track best strategy changes
+  useEffect(() => {
+    if (calculations && calculations.bestStrategy) {
+      trackStrategyComparison(calculations.bestStrategy.name);
+    }
+  }, [calculations?.bestStrategy?.name]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
