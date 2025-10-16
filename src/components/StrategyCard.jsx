@@ -102,7 +102,7 @@ export default function StrategyCard({
 
         {renderRentalSection()}
       </div>
-      
+
       {/* Debug Panel for LOC Strategy */}
       {title === 'LOC Strategy' && strategy.debugData && (
         <DebugPanel debugData={strategy.debugData} />

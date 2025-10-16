@@ -7,8 +7,8 @@ export default function DebugPanel({ debugData }) {
 
   if (!debugData || debugData.length === 0) return null;
 
-  const displayData = showFirst12Months 
-    ? debugData.slice(0, 12) 
+  const displayData = showFirst12Months
+    ? debugData.slice(0, 12)
     : debugData.slice(-12);
 
   return (

@@ -18,16 +18,23 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
     }
   };
 
-  // Calculate validation warning
-  const mortgagePayment = inputs.mortgageBalance && inputs.mortgageRate && inputs.mortgageYears
-    ? (inputs.mortgageBalance * (inputs.mortgageRate / 100 / 12) * Math.pow(1 + inputs.mortgageRate / 100 / 12, inputs.mortgageYears * 12)) /
-      (Math.pow(1 + inputs.mortgageRate / 100 / 12, inputs.mortgageYears * 12) - 1)
+  // Calculate validation warning - ensure we have valid numbers
+  const safeBalance = typeof inputs.mortgageBalance === 'number' ? inputs.mortgageBalance : parseFloat(inputs.mortgageBalance) || 0;
+  const safeRate = typeof inputs.mortgageRate === 'number' ? inputs.mortgageRate : parseFloat(inputs.mortgageRate) || 0;
+  const safeYears = typeof inputs.mortgageYears === 'number' ? inputs.mortgageYears : parseFloat(inputs.mortgageYears) || 0;
+  
+  const mortgagePayment = safeBalance && safeRate && safeYears 
+    ? (safeBalance * (safeRate / 100 / 12) * Math.pow(1 + safeRate / 100 / 12, safeYears * 12)) / 
+      (Math.pow(1 + safeRate / 100 / 12, safeYears * 12) - 1)
     : 0;
 
-  const homeValue = inputs.mortgageBalance ? inputs.mortgageBalance / 0.8 : 0;
-  const monthlyMaintenance = homeValue * (inputs.maintenanceRate / 100 / 12);
-  const totalCosts = (inputs.monthlyExpenses || 0) + mortgagePayment + monthlyMaintenance;
-  const costExceedsIncome = totalCosts > (inputs.monthlyIncome || 0);
+  const homeValue = safeBalance ? safeBalance / 0.8 : 0;
+  const safeMaintenanceRate = typeof inputs.maintenanceRate === 'number' ? inputs.maintenanceRate : parseFloat(inputs.maintenanceRate) || 0;
+  const monthlyMaintenance = homeValue * (safeMaintenanceRate / 100 / 12);
+  const safeExpenses = typeof inputs.monthlyExpenses === 'number' ? inputs.monthlyExpenses : parseFloat(inputs.monthlyExpenses) || 0;
+  const safeIncome = typeof inputs.monthlyIncome === 'number' ? inputs.monthlyIncome : parseFloat(inputs.monthlyIncome) || 0;
+  const totalCosts = safeExpenses + mortgagePayment + monthlyMaintenance;
+  const costExceedsIncome = totalCosts > safeIncome;
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -113,7 +120,7 @@ export default function InputForm({ inputs, onInputChange, onCheckboxChange }) {
             />
             {costExceedsIncome && (
               <p className="text-red-600 text-xs mt-1">
-                ⚠️ Total costs exceed income! Expenses + Mortgage + Maintenance = ${totalCosts.toLocaleString()} &gt; ${(inputs.monthlyIncome || 0).toLocaleString()}
+                ⚠️ Total costs exceed income! Expenses + Mortgage + Maintenance = ${totalCosts.toLocaleString()} &gt; ${safeIncome.toLocaleString()}
               </p>
             )}
           </div>
