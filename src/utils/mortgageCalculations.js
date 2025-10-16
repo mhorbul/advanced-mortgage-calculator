@@ -170,6 +170,7 @@ export const calculateMortgageStrategies = (inputs) => {
   let accCurrentHomeValue = homeValue;
 
   const accData = [];
+  const debugData = []; // Debug output for LOC calculation
 
   while (accBalance > 0 && accMonths < totalMonths * 2) {
     // Calculate mortgage interest and payment
@@ -214,6 +215,19 @@ export const calculateMortgageStrategies = (inputs) => {
 
     accMonths++;
 
+    // Debug output for each month
+    debugData.push({
+      month: accMonths,
+      mortgageBalance: accBalance,
+      locBalance: locBalance,
+      mortgageInterest: mortgageInterest,
+      locInterest: locBalance > 0 ? locBalance * locMonthlyRate : 0,
+      principalPayment: principalPayment,
+      locPayment: leftover > 0 && locBalance > 0 ? Math.min(leftover, locBalance) : 0,
+      leftover: leftover,
+      totalBalance: accBalance + locBalance
+    });
+
     if (accMonths % 12 === 0) {
       accData.push({
         year: accMonths / 12,
@@ -230,7 +244,8 @@ export const calculateMortgageStrategies = (inputs) => {
     netInterest: accTotalInterest + accTotalLocInterest - accTotalTaxSavings,
     finalHomeValue: accCurrentHomeValue,
     months: accMonths,
-    netPosition: accCurrentHomeValue - safeMortgageBalance - accTotalInterest - accTotalLocInterest + accTotalTaxSavings - accTotalMaintenance
+    netPosition: accCurrentHomeValue - safeMortgageBalance - accTotalInterest - accTotalLocInterest + accTotalTaxSavings - accTotalMaintenance,
+    debugData: debugData // Debug output for LOC calculation
   };
 
   // Investment Method
